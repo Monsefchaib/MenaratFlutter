@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +15,10 @@ class GenererBonGasoil extends StatefulWidget {
 }
 
 class _GenererBonGasoilState extends State<GenererBonGasoil> {
+
+  bool isLoading = false;
+  Position? _position;
+  StreamSubscription<Position>? _streamSubscription;
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
   @override
@@ -20,6 +27,8 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
     _getStateList();
 
   }
+  final TextEditingController _importJustif = TextEditingController()..text="Aucun fichier choisi";
+  final TextEditingController _positionController = TextEditingController()..text="Aucune location detectee";
 
   final TextEditingController _kilometrage = TextEditingController();
   final TextEditingController _montant = TextEditingController();
@@ -158,10 +167,18 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                   Divider(thickness: 1,),
                   SizedBox(height: 10,),
                   bonImage(),
-                  ElevatedButton(onPressed: () {
-                    Navigator.pop(context);
+                  SizedBox(height: 10,),
+                  Divider(thickness: 1,),
+                  SizedBox(height: 10,),
+                  getLocationWidget(),
 
-                  },
+                  ElevatedButton(onPressed: () async {
+                    if (_imageFile!.path != null) {
+                    var imageResponse = await Vehicule.uploadImage(
+                    _imageFile!.path, "hhhh");
+                        print(imageResponse);
+                    };
+                    },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                     ),
@@ -245,7 +262,52 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
 
         ),
       );
+//================================================
 
+  Widget getLocationWidget(){
+    return Stack(
+      children: <Widget>[
+        TextFormField(
+          controller: _positionController,
+          enabled: false,
+          showCursor: true,
+          readOnly: true,
+          decoration:  InputDecoration(
+            contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.0, vertical: 15.0),
+            labelText: '        Get location',
+            border:
+            OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+          ),
+        ),
+        !isLoading ?    Positioned(
+            top: 11,
+            child: InkWell(
+              onTap: () async {
+                 setState((){
+                  isLoading=true;
+                  });
+                Position position = await Vehicule.determinePosition() as Position;
+                print(position);
+                List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+                print(placemarks[0]);
+                 setState((){
+                   _positionController.text = placemarks[0].street! + ", " +placemarks[0].subLocality! + ", " + placemarks[0].locality! + ", "+ placemarks[0].country!+placemarks[0].postalCode! + ", ";
+                   isLoading=false;
+                 });
+              },
+              child: Icon(
+                Icons.camera_alt,
+              ),
+            ))  : Center(child:CircularProgressIndicator())
+      ],
+    );
+  }
+
+
+
+
+//================================================
 
   Widget bottomSheet() {
     return Container(
@@ -258,7 +320,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
       child: Column(
         children: <Widget>[
           Text(
-            "Choose Profile photo",
+            "Choisissez d'ou importer le justificatif",
             style: TextStyle(
               fontSize: 20.0,
             ),
@@ -293,18 +355,35 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
     );
     setState(() {
       _imageFile = pickedFile;
+      _importJustif.text=pickedFile!.name;
     });
   }
 
+//================================================
 Widget bonImage(){
   return Stack(
     children: <Widget>[
-        CircleAvatar(
-          radius: 80.0,
-          backgroundImage: _imageFile == null
-              ? AssetImage("assets/images/gasoline.png") : FileImage(File(_imageFile!.path)) as ImageProvider ,
+      TextFormField(
+        controller: _importJustif,
+        enabled: false,
+        showCursor: true,
+        readOnly: true,
+        decoration:  InputDecoration(
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: 20.0, vertical: 15.0),
+          labelText: '        Importer justificatif',
+          border:
+          OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
         ),
-      Positioned(child: InkWell(
+      ),
+        // CircleAvatar(
+        //   radius: 80.0,
+        //   backgroundImage: _imageFile == null
+        //       ? Vehicule.getImage("hehe") : FileImage(File(_imageFile!.path)) as ImageProvider ,
+        // ),
+      Positioned(
+          top: 11,
+          child: InkWell(
         onTap: (){
           showModalBottomSheet(
             context: context,
@@ -318,6 +397,8 @@ Widget bonImage(){
     ],
   );
 }
+
+//================================================
   Widget Vehicules()=>
   Container(
     child: ListView(
@@ -361,11 +442,7 @@ Widget bonImage(){
       ],
     ),
   );
-  // @override
-  // void initState() {
-  //   _future = Vehicule.getVehicules();
-  //   super.initState();
-  // }
+
 
 // -------------------------------------
 
