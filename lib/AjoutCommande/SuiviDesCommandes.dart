@@ -1,12 +1,11 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:suiviventes/AjoutCommande/AddEspeces.dart';
-import 'package:suiviventes/AjoutCommande/AjouterClient.dart';
+import 'package:suiviventes/Models/Client.dart';
+import 'package:suiviventes/Models/Produits.dart';
 import 'package:suiviventes/Models/Transport.dart';
 
 import 'Clients.dart';
-import 'Transport.dart';
 
 class SuiviDesCommandes extends StatefulWidget {
   @override
@@ -37,9 +36,14 @@ class MyCustomForm extends StatefulWidget {
 
 
 class MyCustomFormState extends State<MyCustomForm> {
+  DateTime now = new DateTime.now();
+  Produit produit = Produit(" ", " ", " ", " ", 0, 0, " ");
+  List listProduits = [];
+  Client client = Client(" "," "," "," ");
   bool trans=false;
+  bool isProduits=false;
   Transport transport = new Transport("","","");
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController()..text= "2020/12/11";
   final _formKey = GlobalKey<FormState>();
   DateTime _date = DateTime(2020, 11, 17);
   void _selectDate() async {
@@ -78,7 +82,13 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
               Divider(thickness: 1,),
               InkWell(
-                onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddEspeces()))},
+                onTap: () async { produit = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddEspeces()));
+                setState(() {
+                      produit=produit;
+                      listProduits.add(produit);
+                      isProduits=true;
+                    });
+                 },
                 child: ListTile(
                   title: Text('Produits',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
                   subtitle: Text("Ajouter les produits à vendre"),
@@ -91,12 +101,37 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                 ),
               ),
+              if(isProduits=true)...[
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemCount: listProduits.length,
+                    itemBuilder: (BuildContext context,int index){
+                      return ListTile(
+
+                          leading: Icon(Icons.check),
+                          trailing: Text("${listProduits[index].nbrPlantes}",
+                            style: TextStyle(
+                                color: Colors.green,fontSize: 15),),
+                          title:Text(listProduits[index].espece)
+                      );
+                    }
+                ),
+              ],
               Divider(thickness: 1,),
               InkWell(
-                onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddClients()))},
+                onTap: () async {
+                  client = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddClients()));
+                  setState(() {
+                    trans=true;
+                  client=client;
+                  });
+                  },
+
+
                 child: ListTile(
                   title: Text('Client',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
-                  subtitle: Text("Ajouter le client"),
+                  subtitle: Text("Ajouter la commande"),
                   trailing: Wrap(
                     spacing: 12, // space between two icons
                     children: <Widget>[
@@ -106,6 +141,42 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                 ),
               ),
+            if(trans==true)...[
+              Container(
+                padding: EdgeInsets.only(left: 16.0),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Text("Nom :  ", style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+                        Text(client.nom),
+
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text("Prenom :  ", style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+                        Text(client.prenom),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text("Telephone :  ", style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+                        Text(client.telephone),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text("Adresse :  ", style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+                        Text(client.adresse),
+                      ],
+                    ),
+                  ],
+
+                ),
+              ),
+              ],
               // InkWell(
               //   onTap: () async {transport = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new TransportPage())) ;
               //     if(transport != null){
@@ -168,7 +239,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         );
                       }
                     },
-                    child: const Text('Submit'),
+                    child: const Text('Ajouter la commande'),
                   ),
                 ),
               ),

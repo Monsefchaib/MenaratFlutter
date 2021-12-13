@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class PommierForm extends StatefulWidget {
   @override
@@ -15,7 +16,8 @@ class _PommierFormState extends State<PommierForm> {
   String selectedLocation = '';
   // String _porteGreffeValue='';
   // var porteGreffe = ['','M 106','M 111'];
-
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
@@ -67,6 +69,23 @@ class _PommierFormState extends State<PommierForm> {
           Divider(thickness: 1,),
           SizedBox(height: 10,),
           TextFormField(
+            controller: FnbrPlantes,
+            keyboardType: TextInputType.number,
+            decoration:  InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: 20.0, vertical: 15.0),
+              labelText: 'Nombre de plantes',
+              border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+            ),
+            onChanged: (String? value){
+              print(value);
+            },
+          ),
+          Divider(thickness: 1,),
+          SizedBox(height: 10,),
+          TextFormField(
+            controller: FprixUnitaire,
             keyboardType: TextInputType.number,
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -80,7 +99,10 @@ class _PommierFormState extends State<PommierForm> {
             },
           ),
           SizedBox(height: 10,),
-          ElevatedButton(onPressed: () {  },
+          ElevatedButton(onPressed: () {
+            Produit produit = Produit("Pommier",selectedLocation," "," ",int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text)," ");
+            Navigator.pop(context, produit);
+          },
             child: Text('Ajouter'),
           ),
         ],

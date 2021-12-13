@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class FiguierForm extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _FiguierFormState extends State<FiguierForm> {
   String _conteneurValue = '';
   var susbtrat=['','SOL','TOURBE'];
   var conteneur=['','POT','SACHET'];
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -131,6 +134,7 @@ class _FiguierFormState extends State<FiguierForm> {
         Divider(thickness: 1,),
         SizedBox(height: 10,),
         TextFormField(
+          controller: FnbrPlantes,
           keyboardType: TextInputType.number,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
@@ -146,6 +150,7 @@ class _FiguierFormState extends State<FiguierForm> {
         Divider(thickness: 1,),
         SizedBox(height: 10,),
         TextFormField(
+          controller: FprixUnitaire,
           keyboardType: TextInputType.number,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
@@ -159,7 +164,11 @@ class _FiguierFormState extends State<FiguierForm> {
           },
         ),
         SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {  },
+        ElevatedButton(onPressed: () {
+          Produit produit = Produit("Figuier",selectedLocation,_substratValue,_conteneurValue,int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text)," ");
+          Navigator.pop(context, produit);
+
+        },
           child: Text('Ajouter'),
 
         ),

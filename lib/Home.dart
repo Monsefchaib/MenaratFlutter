@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'Gasoil/GenererBon1.dart';
+import 'Gasoil/GenererBonGasoil.dart';
+import 'Gasoil/PickImage.dart';
 import 'Login.dart';
 
 class Home extends StatefulWidget {
@@ -48,7 +51,7 @@ class _HomeState extends State<Home> {
     ),
           Card(
             child: InkWell(
-            onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new Login()),) },
+            onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new GenererBonGasoil()),) },
             child: GridTile(
                 child:Image.asset('assets/images/gasoline.png',fit: BoxFit.fill,),
                 footer: Container(

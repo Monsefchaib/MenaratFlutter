@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.suiviventes">
    <application
-        android:label="suiviventes"
+       android:requestLegacyExternalStorage="true"
+       android:label="suiviventes"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

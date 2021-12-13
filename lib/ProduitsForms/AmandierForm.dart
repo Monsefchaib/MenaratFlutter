@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class AmandierForm extends StatefulWidget {
   @override
@@ -25,6 +26,11 @@ class _AmandierFormState extends State<AmandierForm> {
   String _conteneurValue = '';
   var susbtrat=['','SOL','TOURBE'];
   var conteneur=['','POT','SACHET'];
+
+
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
@@ -187,6 +193,7 @@ class _AmandierFormState extends State<AmandierForm> {
           Divider(thickness: 1,),
           SizedBox(height: 10,),
           TextFormField(
+            controller: FnbrPlantes,
             keyboardType: TextInputType.number,
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -202,6 +209,7 @@ class _AmandierFormState extends State<AmandierForm> {
           Divider(thickness: 1,),
           SizedBox(height: 10,),
           TextFormField(
+            controller: FprixUnitaire,
             keyboardType: TextInputType.number,
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -215,7 +223,11 @@ class _AmandierFormState extends State<AmandierForm> {
             },
           ),
           SizedBox(height: 10,),
-          ElevatedButton(onPressed: () {  },
+          ElevatedButton(onPressed: () {
+            Produit produit = Produit("Amandier",selectedLocation,_substratValue,_conteneurValue,int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text),_porteGreffeValue);
+            Navigator.pop(context, produit);
+
+          },
             child: Text('Ajouter'),
 
           ),

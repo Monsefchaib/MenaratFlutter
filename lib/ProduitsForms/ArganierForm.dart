@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class ArganierForm extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class _ArganierFormState extends State<ArganierForm> {
   String _conteneurValue = '';
   var susbtrat=['','SOL','TOURBE'];
   var conteneur=['','POT','SACHET'];
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -93,6 +96,7 @@ class _ArganierFormState extends State<ArganierForm> {
         Divider(thickness: 1,),
         SizedBox(height: 10,),
         TextFormField(
+          controller: FnbrPlantes,
           keyboardType: TextInputType.number,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
@@ -109,6 +113,7 @@ class _ArganierFormState extends State<ArganierForm> {
         SizedBox(height: 10,),
         TextFormField(
           keyboardType: TextInputType.number,
+          controller: FprixUnitaire,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
                 horizontal: 20.0, vertical: 15.0),
@@ -121,7 +126,11 @@ class _ArganierFormState extends State<ArganierForm> {
           },
         ),
         SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {  },
+        ElevatedButton(onPressed: () {
+          Produit produit = Produit("Arganier"," ",_substratValue,_conteneurValue,int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text)," ");
+          Navigator.pop(context, produit);
+
+        },
           child: Text('Ajouter'),
 
         ),
