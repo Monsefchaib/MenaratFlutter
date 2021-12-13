@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class OlivierForm extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _OlivierFormState extends State<OlivierForm> {
   String _conteneurValue = '';
   var susbtrat=['','SOL','TOURBE'];
   var conteneur=['','POT','SACHET'];
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -132,6 +135,7 @@ class _OlivierFormState extends State<OlivierForm> {
           Divider(thickness: 1,),
           SizedBox(height: 10,),
           TextFormField(
+            controller: FnbrPlantes,
             keyboardType: TextInputType.number,
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -147,6 +151,7 @@ class _OlivierFormState extends State<OlivierForm> {
           Divider(thickness: 1,),
           SizedBox(height: 10,),
           TextFormField(
+            controller: FprixUnitaire,
             keyboardType: TextInputType.number,
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -160,7 +165,11 @@ class _OlivierFormState extends State<OlivierForm> {
             },
           ),
           SizedBox(height: 10,),
-          ElevatedButton(onPressed: () {  },
+          ElevatedButton(onPressed: () {
+            Produit produit = Produit("Olivier",selectedLocation,_substratValue,_conteneurValue,int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text)," ");
+            Navigator.pop(context, produit);
+
+          },
             child: Text('Ajouter'),
 
           ),

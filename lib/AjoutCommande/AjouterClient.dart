@@ -78,7 +78,7 @@ class _AjouterClientState extends State<AjouterClient> {
               print(client.toString());
               final result = await client.createClient(client);
               final title = 'Done';
-              final text = result.error ? (result.errorMessage ?? 'An error occurred') : 'Votre Client a été ajouté';
+              final text = result.error ? (result.errorMessage ) : 'Votre Client a été ajouté';
 
               showDialog(
                   context: context,

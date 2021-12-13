@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:suiviventes/Models/Produits.dart';
 
 class CaroubierForm extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _CaroubierFormState extends State<CaroubierForm> {
   String _conteneurValue = '';
   var susbtrat=['','SOL','TOURBE'];
   var conteneur=['','POT','SACHET'];
+  final FnbrPlantes = TextEditingController();
+  final FprixUnitaire = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -94,6 +97,7 @@ class _CaroubierFormState extends State<CaroubierForm> {
         Divider(thickness: 1,),
         SizedBox(height: 10,),
         TextFormField(
+          controller: FnbrPlantes,
           keyboardType: TextInputType.number,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
@@ -109,6 +113,7 @@ class _CaroubierFormState extends State<CaroubierForm> {
         Divider(thickness: 1,),
         SizedBox(height: 10,),
         TextFormField(
+          controller: FprixUnitaire,
           keyboardType: TextInputType.number,
           decoration:  InputDecoration(
             contentPadding: EdgeInsets.symmetric(
@@ -122,7 +127,11 @@ class _CaroubierFormState extends State<CaroubierForm> {
           },
         ),
         SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {  },
+        ElevatedButton(onPressed: () {
+          Produit produit = Produit("Caroubier"," ",_substratValue,_conteneurValue,int.parse(FnbrPlantes.text),double.parse(FprixUnitaire.text)," ");
+          Navigator.pop(context, produit);
+
+        },
           child: Text('Ajouter'),
 
         ),
