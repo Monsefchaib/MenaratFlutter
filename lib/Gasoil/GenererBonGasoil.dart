@@ -6,7 +6,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:suiviventes/Models/Bons.dart';
+import 'package:suiviventes/Models/Engins.dart';
 import 'package:suiviventes/Models/vehicule.dart';
+import 'package:path/path.dart' as path;
 
 import '../constants.dart';
 class GenererBonGasoil extends StatefulWidget {
@@ -15,23 +18,18 @@ class GenererBonGasoil extends StatefulWidget {
 }
 
 class _GenererBonGasoilState extends State<GenererBonGasoil> {
-
+  String typeChoisi = "";
+  int numberOfEngins = 0;
   bool isLoading = false;
   Position? _position;
   StreamSubscription<Position>? _streamSubscription;
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
-  @override
-  void initState() {
-    super.initState();
-    _getStateList();
-
-  }
   final TextEditingController _importJustif = TextEditingController()..text="Aucun fichier choisi";
   final TextEditingController _positionController = TextEditingController()..text="Aucune location detectee";
-
   final TextEditingController _kilometrage = TextEditingController();
   final TextEditingController _montant = TextEditingController();
+  final List<TextEditingController> _enginsController = List.generate(5, (i) => TextEditingController());
   String _choicePartner='';
   var choicePartner = ['','Partenaire','Autres'];
   final TextEditingController _controller = TextEditingController()..text= "2020/12/11";
@@ -52,8 +50,18 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
     }
   }
   List<Vehicule> listVehicules = [];
+  List<Engins> listEnginsData = [];
   Vehicule vehiculeChoisie = Vehicule("","","");
   Vehicule engine = Vehicule("Engins", "", "");
+
+  @override
+  void initState() {
+    super.initState();
+    _getStateList();
+    _getEnginsList();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,11 +77,10 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
           }
           listVehicules = snapshot.data as List<Vehicule>;
           listVehicules.add(engine);
-          return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
+          return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
                   TextFormField(
@@ -123,46 +130,48 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                   ),
                   Divider(thickness: 1,),
                   SizedBox(height: 10,),
-                  // InputDecorator(
-                  //   decoration: InputDecoration(
-                  //     contentPadding: EdgeInsets.symmetric(
-                  //         horizontal: 20.0, vertical: 15.0),
-                  //     labelText: 'Vehicule',
-                  //     border:
-                  //     OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                  //   ),
-                  //   child:DropdownButton<Vehicule>(
-                  //     value: vehiculeChoisie,
-                  //     iconSize: 30,
-                  //     icon: (null),
-                  //     style: TextStyle(
-                  //       color: Colors.black54,
-                  //       fontSize: 16,
-                  //     ),
-                  //     hint: Text('Select State'),
-                  //     onChanged: (Vehicule? newValue) {
-                  //       setState(() {
-                  //         vehiculeChoisie = newValue!;
-                  //         // _getCitiesList();
-                  //         print(vehiculeChoisie);
-                  //       });
-                  //     },
-                  //     items: statesList?.map((vehicule) {
-                  //       return new DropdownMenuItem<Vehicule>(
-                  //         child: new Text(vehicule.nomVehicule + " " + vehicule.immatricule),
-                  //         value: vehicule,
-                  //       );
-                  //     })?.toList() ??
-                  //         [],
-                  //   ),
-                  // ),
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
+                      labelText: 'Vehicule',
+                      border:
+                      OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                    ),
+                    child:DropdownButton<Vehicule>(
+                      value: vehiculeChoisie,
+                      iconSize: 30,
+                      icon: (null),
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16,
+                      ),
+                      hint: Text('Select State'),
+                      onChanged: (Vehicule? newValue) {
+                        setState(() {
+                          vehiculeChoisie = newValue!;
+                          // _getCitiesList();
+                          print(vehiculeChoisie);
+                        });
+                      },
+                      items: statesList?.map((vehicule) {
+                        return new DropdownMenuItem<Vehicule>(
+                          child: new Text(vehicule.nomVehicule + " " + vehicule.immatricule),
+                          value: vehicule,
+                        );
+                      })?.toList() ??
+                          [],
+                    ),
+                  ),
 
                   if(vehiculeChoisie.nomVehicule == "Engins")...[
-                    Engines(),
+                    // Engines(),
+                    EnginsBuilder()
                   ],
                   if(vehiculeChoisie.nomVehicule != "Engins")...[
                     Vehicules(),
                   ],
+                  if(_choicePartner=="Autres") ...[
                   SizedBox(height: 10,),
                   Divider(thickness: 1,),
                   SizedBox(height: 10,),
@@ -171,13 +180,28 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                   Divider(thickness: 1,),
                   SizedBox(height: 10,),
                   getLocationWidget(),
-
+                    ],
                   ElevatedButton(onPressed: () async {
-                    if (_imageFile!.path != null) {
-                    var imageResponse = await Vehicule.uploadImage(
-                    _imageFile!.path, "hhhh");
-                        print(imageResponse);
-                    };
+
+                    if(vehiculeChoisie.nomVehicule == "Engins" && _choicePartner=="Partenaire"){
+                      createBonEnginPartenaire();
+                    }
+                    if(vehiculeChoisie.nomVehicule!="Engins" && _choicePartner=="Partenaire"){
+                      createBonVehiculePartenaire();
+                    }
+                    if(vehiculeChoisie.nomVehicule!="Engins" && _choicePartner=="Autres"){
+                      createBonVehiculeAutres();
+                    }
+                    if(vehiculeChoisie.nomVehicule!="Engins" && _choicePartner=="Autres"){
+                      createBonEnginsAutres();
+                    }
+
+
+                    // if (_imageFile!.path != null) {
+                    // var imageResponse = await Vehicule.uploadImage(
+                    // _imageFile!.path, "hhhh");
+                    //     print(imageResponse);
+                    // };
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
@@ -187,12 +211,224 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                   ),
                 ],
               ),
-            ),
-          );
+            );
         },
       ),
     );
   }
+
+  FutureBuilder<List<Engins>> EnginsBuilder(){
+    return  FutureBuilder(
+        future: _getEnginsList(),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot){
+  if (!snapshot.hasData) {
+  return Center(child: CircularProgressIndicator());
+  }
+  listEnginsData=snapshot.data! as List<Engins>;
+  numberOfEngins = snapshot.data!.length;
+  // listVehicules = snapshot.data as List<Engins>;
+  // listVehicules.add(engine);
+  return ListView.builder(
+    shrinkWrap: true,
+  itemCount: snapshot.data!.length,
+  itemBuilder: (context,i){
+  return Column(
+    children: [
+      Divider(thickness: 1,),
+      SizedBox(height: 10,),
+      TextFormField(
+      controller: _enginsController[i],
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+      contentPadding: EdgeInsets.symmetric(
+      horizontal: 20.0, vertical: 15.0),
+      labelText: snapshot.data![i].nom,
+      border:
+      OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+      ),
+      onChanged: (String? value){
+
+      },
+      ),
+    ],
+  );
+  },
+
+  );
+  }
+      );
+
+  }
+//================================================
+
+
+void createBonEnginPartenaire() async{
+  List<Engins> listEngins = [];
+  for(int i=0;i<numberOfEngins;i++){
+    if(listEnginsData[i]!=null && _enginsController[i] != null){
+      listEnginsData[i].montant = _enginsController[i].text ;
+      // _montant.text = ((int.parse(_montant.text)) + (int.parse(listEnginsData[i].montant))).toString() ;
+      listEngins.add(listEnginsData[i]);
+    }
+  }
+  Bons bon = new Bons.partEngins("${_date.toLocal()}".split(' ')[0], _choicePartner, listEngins, _montant.text );
+  print(bon);
+  final result = await bon.createBon(bon);
+  final title = 'Done';
+  final text = result.error ? (result.errorMessage ) : 'Votre Bon a été crée';
+
+  showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(text),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      )
+  )
+      .then((data) {
+    if (result.data) {
+      Navigator.of(context).pop();
+    }
+  });
+}
+
+
+  //================================================
+  
+  void createBonVehiculePartenaire() async {
+    Bons bon = new Bons.partVehicule("${_date.toLocal()}".split(' ')[0], _choicePartner, vehiculeChoisie, _kilometrage.text, _montant.text);
+    final result = await bon.createBon(bon);
+    final title = 'Done';
+    final text = result.error ? (result.errorMessage ) : 'Votre Bon a été crée';
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(title),
+          content: Text(text),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        )
+    )
+        .then((data) {
+      if (result.data) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+//================================================
+ void createBonEnginsAutres() async {
+   List<Engins> listEngins = [];
+   for(int i=0;i<numberOfEngins;i++){
+     if(listEnginsData[i]!=null && _enginsController[i] != null){
+       listEnginsData[i].montant = _enginsController[i].text ;
+       // _montant.text = ((int.parse(_montant.text)) + (int.parse(listEnginsData[i].montant))).toString() ;
+       listEngins.add(listEnginsData[i]);
+     }
+   }
+   String? imageResponse;
+   if (_imageFile!.path != null) {
+     imageResponse = await uploadImage(
+         _imageFile!.path, "hhhh");
+     print(imageResponse);
+   };
+
+   Bons bon = Bons.autresEngins("${_date.toLocal()}".split(' ')[0], _choicePartner, listEngins, _importJustif.text,  _positionController.text, _montant.text);
+   final result = await bon.createBon(bon);
+   final title = 'Done';
+   final text = result.error  ? (result.errorMessage ) : 'Votre Bon a été crée';
+
+   showDialog(
+       context: context,
+       builder: (_) => AlertDialog(
+         title: Text(title),
+         content: Text(text),
+         actions: <Widget>[
+           FlatButton(
+             child: Text('Ok'),
+             onPressed: () {
+               Navigator.of(context).pop();
+             },
+           )
+         ],
+       )
+   )
+       .then((data) {
+     if (result.data) {
+       Navigator.of(context).pop();
+     }
+   });
+ }
+//================================================
+
+  Future<String> uploadImage(filename, url) async {
+    print("send image");
+    var request = http.MultipartRequest('POST', Uri.parse("http://$urlApi:3000/vehicules/image/"));
+    request.files.add(await http.MultipartFile.fromPath('image', filename));
+    var res = await request.send();
+    // var response = await http.Response.fromStream(res);
+    var responseString = await res.stream.bytesToString();
+    var imageName = json.decode(responseString);
+    _importJustif.text =  imageName.map((m)=>m['filename']).toString().replaceAll("(","").replaceAll(")","") ;
+    return res.reasonPhrase!;
+  }
+
+
+
+//================================================
+
+    void createBonVehiculeAutres() async{
+          String? imageResponse;
+          if (_imageFile!.path != null) {
+           imageResponse = await uploadImage(
+          _imageFile!.path, "hhhh");
+              print(imageResponse);
+          };
+
+          Bons bon = Bons.autresVehicule("${_date.toLocal()}".split(' ')[0], _choicePartner, vehiculeChoisie,  _kilometrage.text,  _importJustif.text, _positionController.text, _montant.text);
+
+          final result = await bon.createBon(bon);
+          final title = 'Done';
+          final text = result.error  ? (result.errorMessage ) : 'Votre Bon a été crée';
+
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Text(title),
+                content: Text(text),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              )
+          )
+              .then((data) {
+            if (result.data) {
+              Navigator.of(context).pop();
+            }
+          });
+    }
+
+
+  //================================================
+
   Widget Engines()=>
       Container(
         child: ListView(
@@ -353,9 +589,12 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
     final pickedFile = await _picker.pickImage(
       source: source,
     );
+    final fileName = path.basename(pickedFile!.path);
+    print(fileName);
+    print(pickedFile.name);
     setState(() {
       _imageFile = pickedFile;
-      _importJustif.text=pickedFile!.name;
+      _importJustif.text=fileName;
     });
   }
 
@@ -460,6 +699,24 @@ Widget bonImage(){
         statesList = listMapped;
         vehiculeChoisie=listMapped[0];
         print(vehiculeChoisie);
+      });
+      return listMapped;
+    } else {
+      throw Exception();
+    }
+  }
+
+List? enginsList;
+
+  Future<List<Engins>> _getEnginsList() async {
+    List<Engins> listMapped;
+    final url = Uri.parse('http://$urlApi:3000/engins');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List vehicules = json.decode(response.body);
+      listMapped =  vehicules.map((json) => Engins.fromJson(json)).toList();
+      setState(() {
+        enginsList = listMapped;
       });
       return listMapped;
     } else {

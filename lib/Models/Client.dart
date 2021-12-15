@@ -36,7 +36,7 @@ class Client {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List clients = json.decode(response.body);
-
+        print(clients);
       return clients.map((json) => Client.fromJson(json)).where((user) {
         final nameLower = user.nom.toLowerCase();
         final queryLower = query.toLowerCase();
@@ -70,7 +70,7 @@ class Client {
 
   getAllClients() async {
     print("my clients");
-    String url = "http://192.168.1.166:3000/clients";
+    String url = "http://$urlApi:3000/clients";
     var response = await http.get(Uri.parse(url));
     var jsonData = (jsonDecode(response.body) as List);
     print(jsonData);

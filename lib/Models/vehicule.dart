@@ -31,6 +31,14 @@ class Vehicule{
     }
   }
 
+  Map<String, dynamic> toJson() =>
+      {
+
+        'nomVehicule': this.nomVehicule,
+        'immatricule': this.immatricule,
+        'kilometrage': this.kilometrage,
+
+      };
 
   factory Vehicule.fromJson(dynamic json) {
     Vehicule vehicule = Vehicule(
@@ -42,16 +50,19 @@ class Vehicule{
   }
 
  static NetworkImage getImage(String imageName){
-    String url = "http://192.168.1.4:3000/vehicules/image/763c7e2c2d05ee7c5576dd7bb2fb7fee";
+    String url = "http://$urlApi:3000/vehicules/image/763c7e2c2d05ee7c5576dd7bb2fb7fee";
     return NetworkImage(url);
   }
 
  static Future<String> uploadImage(filename, url) async {
     print("send image");
-    var request = http.MultipartRequest('POST', Uri.parse("http://192.168.1.4:3000/vehicules/image/"));
+    var request = http.MultipartRequest('POST', Uri.parse("http://$urlApi:3000/vehicules/image/"));
     request.files.add(await http.MultipartFile.fromPath('image', filename));
     var res = await request.send();
-    print(res);
+    // var response = await http.Response.fromStream(res);
+    var responseString = await res.stream.bytesToString();
+    var imageName = json.decode(responseString);
+    print(imageName.map((m)=>m['filename']));
     return res.reasonPhrase!;
   }
 
