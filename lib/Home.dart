@@ -21,6 +21,7 @@ class _HomeState extends State<Home> {
         ),
       body:
       GridView.count(
+        shrinkWrap: true,
         primary: false,
         padding: const EdgeInsets.all(20),
         crossAxisSpacing: 10,

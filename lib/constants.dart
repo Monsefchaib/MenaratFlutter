@@ -1,1 +1,1 @@
-String urlApi = "192.168.1.4";
+String urlApi = "192.168.1.2";
