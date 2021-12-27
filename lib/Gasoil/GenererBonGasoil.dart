@@ -78,7 +78,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Generer Bon Gasoil"),
+        title: Text("Generer Bon Carburant"),
         backgroundColor: Colors.red,
       ),
       body: FutureBuilder(
@@ -584,6 +584,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                     .determinePosition() as Position;
                 List<Placemark> placemarks = await placemarkFromCoordinates(
                     position.latitude, position.longitude);
+                print(placemarks);
                 setState(() {
                   _positionController.text = placemarks[0].street! + ", " +
                       placemarks[0].subLocality! + ", " +
