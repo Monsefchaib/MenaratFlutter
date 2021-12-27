@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
                       padding: const EdgeInsets.all(1.0),
                       child: Column(
                         children: <Widget>[
-                          Text("Suivi Consommation Gasoil",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                          Text("Suivi Consommation Carburant",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                         ],
                       ),
                     ),

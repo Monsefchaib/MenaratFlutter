@@ -12,6 +12,12 @@ class PDFApi{
 
     return _storeFile(url, bytes);
   }
+  static Future<File> loadCommande(String url) async {
+    final response = await http.get(Uri.parse('http://$urlApi:3000/commandes/pdf/$url'));
+    final bytes = response.bodyBytes;
+
+    return _storeFile(url, bytes);
+  }
 
   static Future<File> _storeFile(String url, List<int> bytes) async {
     final filename = basename(url);

@@ -1,13 +1,27 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:suiviventes/AjoutCommande/AddEspeces.dart';
+import 'package:suiviventes/AjoutCommande/SearchLots.dart';
+import 'package:suiviventes/Gasoil/GetBonGenere.dart';
+import 'package:suiviventes/Models/Article.dart';
 import 'package:suiviventes/Models/Client.dart';
+import 'package:suiviventes/Models/Commande.dart';
+import 'package:suiviventes/Models/Lots.dart';
+import 'package:suiviventes/Models/PDFApi.dart';
 import 'package:suiviventes/Models/Produits.dart';
 import 'package:suiviventes/Models/Transport.dart';
 
+import '../Home.dart';
 import 'Clients.dart';
-
+import 'SearchLots2.dart';
+import 'SearchLots3.dart';
+String? pdfURL;
 class SuiviDesCommandes extends StatefulWidget {
+  static void pdfSetUrl(String url){
+    pdfURL = url;
+  }
   @override
   _SuiviDesCommandesState createState() => _SuiviDesCommandesState();
 }
@@ -36,12 +50,15 @@ class MyCustomForm extends StatefulWidget {
 
 
 class MyCustomFormState extends State<MyCustomForm> {
+  double prixTotal = 0;
   DateTime now = new DateTime.now();
-  Produit produit = Produit(" ", " ", " ", " ", 0, 0, " ");
-  List listProduits = [];
+  Lots lot = Lots(" ", " ", " ", " ", 0, 0);
+  List listArticles = [];
   Client client = Client(" "," "," "," ");
   bool trans=false;
+  Article article = Article(Lots(" ", " ", " ", " ", 0, 0),"","",0,0);
   bool isProduits=false;
+  bool isArticles=false;
   Transport transport = new Transport("","","");
   final TextEditingController _controller = TextEditingController()..text= "2020/12/11";
   final _formKey = GlobalKey<FormState>();
@@ -82,15 +99,15 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
               Divider(thickness: 1,),
               InkWell(
-                onTap: () async { produit = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddEspeces()));
+                onTap: () async { article = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AddEspeces()));
                 setState(() {
-                      produit=produit;
-                      listProduits.add(produit);
-                      isProduits=true;
+                     article = article;
+                     listArticles.add(article);
+                      isArticles=true;
                     });
                  },
                 child: ListTile(
-                  title: Text('Produits',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
+                  title: Text('Lots',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
                   subtitle: Text("Ajouter les produits à vendre"),
                   trailing: Wrap(
                     spacing: 12, // space between two icons
@@ -101,19 +118,19 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                 ),
               ),
-              if(isProduits=true)...[
+              if(isArticles==true)...[
                 ListView.builder(
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
-                    itemCount: listProduits.length,
+                    itemCount: listArticles.length,
                     itemBuilder: (BuildContext context,int index){
                       return ListTile(
 
                           leading: Icon(Icons.check),
-                          trailing: Text("${listProduits[index].nbrPlantes}",
+                          trailing: Text("${listArticles[index].quantite}",
                             style: TextStyle(
                                 color: Colors.green,fontSize: 15),),
-                          title:Text(listProduits[index].espece)
+                          title:Text("${listArticles[index].lot!.variete}"),
                       );
                     }
                 ),
@@ -229,19 +246,23 @@ class MyCustomFormState extends State<MyCustomForm> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                      }
-                    },
-                    child: const Text('Ajouter la commande'),
-                  ),
+                    onPressed: () async {
+                                        // Validate returns true if the form is valid, or false otherwise.
+                                        // if (_formKey.currentState!.validate()) {
+                                        //   // If the form is valid, display a snackbar. In the real world,
+                                        //   // you'd often call a server or save the information in a database.
+                                        //   ScaffoldMessenger.of(context).showSnackBar(
+                                        //     const SnackBar(content: Text('Processing Data')),
+                                        //   );
+                                        // }
+                                         await createCommande();
+                                        final url = await Commande.getPdfUrl();
+                                        final file = await PDFApi.loadCommande(pdfURL!);
+                                        openPDF(context, file);
+                                        },
+                                      child: const Text('Ajouter la commande'),
                 ),
+              ),
               ),
             ],
           ),
@@ -250,4 +271,43 @@ class MyCustomFormState extends State<MyCustomForm> {
     ],
     );
   }
+  Future<String> createCommande() async {
+    List<Article> listArticlesToSend = List<Article>.from(listArticles);
+    for(Article article in listArticlesToSend){
+      prixTotal+=article.prixUnitaire!*article.quantite!;
+    }
+    Commande commande = Commande(List<Article>.from(listArticles),client,_controller.text,prixTotal);
+    final result = await Commande.createCommande(commande);
+    final title = 'Done';
+    final text = result.error ? (result.errorMessage) : 'La commande a été ajoutée';
+
+    showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(
+              title: Text(title),
+              content: Text(text),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )
+    )
+        .then((data) {
+      if (result.data) {
+        Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new Home()));
+      }
+    },
+
+    );
+    return "";
+  }
+
+  void openPDF(BuildContext context, File file) => Navigator.of(context).push(
+    MaterialPageRoute(builder: (context) => GetBonGenere(file: file)),
+  );
 }
