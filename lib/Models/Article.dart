@@ -26,14 +26,14 @@ class Article{
       'quantite': this.quantite,
     };
   }
-  factory Article.fromJson(dynamic json) {
-    Article article = Article(
-      json['lot'] as Lots,
+ factory Article.fromJson(dynamic json) {
+   Article article = Article(
+      Lots.fromJson(json['lot']),
       json['substrat'] as String,
       json['conteneur'] as String,
-      json['prixUnitaire'] as double,
-      json['quantite'] as double,
-    );
+     (json['prixUnitaire'] as num).toDouble(),
+     (json['quantite'] as num).toDouble(),
+   );
     return article;
   }
 

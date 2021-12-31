@@ -10,13 +10,15 @@ import 'api_response.dart';
 
 String? commandePDFF;
 class Commande{
+  String? id;
   List<Article>? articles;
   Client? client;
   String? date;
   double? prixTotal;
   String? commandePDF;
+  String? status;
 
-  Commande(this.articles, this.client, this.date, this.prixTotal);
+  Commande(this.id,this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF);
   Commande.pdf(this.commandePDF);
 
   @override
@@ -27,19 +29,34 @@ class Commande{
   Map<String, dynamic> toJson() {
     List? articles =
     this.articles != null ? this.articles!.map((i) => i.toJson()).toList() : null;
-    // Vehicule vehicule = this.vehicule!=null ? this.vehicule!.toJson() : null;
     return {
       'articles': this.articles,
       'client': this.client,
       'date': this.date,
       'prixTotal': this.prixTotal,
+      'status':this.status,
     };
   }
 
-  factory Commande.fromJson(dynamic json) {
+  factory Commande.PdfFromJson(dynamic json) {
     Commande commande = Commande.pdf(
       json['commandePDF'] as String,
     );
+    return commande;
+  }
+
+   factory Commande.fromJson(dynamic json) {
+     List<dynamic> parsedListJson = json['articles'];
+        List<Article>? articlesList = List<Article>.from(parsedListJson.map((i) => Article.fromJson(i)));
+     Client client = new Client.fromJson(json['client']);
+    Commande commande = Commande(
+        json['_id'] as String,
+        articlesList ,
+        client,
+        json['date'] as String,
+        (json['prixTotal'] as num).toDouble(),
+    json['status'] as String,
+    json['commandePDF'] as String);
     return commande;
   }
 
@@ -51,7 +68,7 @@ class Commande{
       if (data.statusCode == 201) {
         print("La commande est ajoutée");
         var jsonData = jsonDecode(data.body);
-        Commande commande = new Commande.fromJson(jsonData);
+        Commande commande = new Commande.PdfFromJson(jsonData);
         SuiviDesCommandes.pdfSetUrl(commande.commandePDF!);
         return APIResponse<bool>(data: true, errorMessage: "");
       }
@@ -63,6 +80,18 @@ class Commande{
             error: true, errorMessage: 'An error occured', data: false));
   }
 
+  static Future<List<Commande>> getCommandes(String? s) async {
+    final url = Uri.parse('http://$urlApi:3000/commandes/filter?s=$s');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List commandes = json.decode(response.body);
+      List<Commande> listMapped =  commandes.map((json) => Commande.fromJson(json)).toList();
+      return listMapped;
+
+    } else {
+      throw Exception();
+    }
+  }
 
   static String? getPdfUrl(){
     print(commandePDFF);

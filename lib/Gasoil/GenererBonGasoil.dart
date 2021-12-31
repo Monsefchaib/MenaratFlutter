@@ -191,7 +191,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                 if(_choicePartner == "Autres") ...[
                   SizedBox(height: 10,),
                   Divider(thickness: 1,),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10 ,),
                   bonImage(),
                   SizedBox(height: 10,),
                   Divider(thickness: 1,),

@@ -276,7 +276,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     for(Article article in listArticlesToSend){
       prixTotal+=article.prixUnitaire!*article.quantite!;
     }
-    Commande commande = Commande(List<Article>.from(listArticles),client,_controller.text,prixTotal);
+    Commande commande = Commande("",List<Article>.from(listArticles),client,_controller.text,prixTotal,"","");
     final result = await Commande.createCommande(commande);
     final title = 'Done';
     final text = result.error ? (result.errorMessage) : 'La commande a été ajoutée';
