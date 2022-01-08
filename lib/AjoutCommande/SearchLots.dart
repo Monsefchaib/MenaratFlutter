@@ -218,7 +218,7 @@ class _SearchLotsState extends State<SearchLots> {
                       InkWell(
                       onTap: (){Navigator.pop(context, snapshot.data![i]);},
                         child: Container(
-                          height: 120.0,
+                          height: 140.0,
                           margin: const EdgeInsets.symmetric(
                             vertical: 8.0,
                             horizontal: 8.0,

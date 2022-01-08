@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suiviventes/AjoutCommande/AfficherCommandes/AfficherCommandes.dart';
 
 import 'SuiviDesCommandes.dart';
 
@@ -48,9 +49,9 @@ class _CommandesHomeState extends State<CommandesHome> {
             ),
             Card(
               child: InkWell(
-                onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new SuiviDesCommandes()),) },
+                onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AfficherCommandes()),) },
                 child: GridTile(
-                    child:Image.asset('assets/images/gasoline.png',fit: BoxFit.fill,),
+                    child:Image.asset('assets/images/clipboard.png',fit: BoxFit.fill,),
                     footer: Container(
                       color: Colors.white70,
                       child: ListTile(
@@ -58,7 +59,7 @@ class _CommandesHomeState extends State<CommandesHome> {
                           padding: const EdgeInsets.all(1.0),
                           child: Column(
                             children: <Widget>[
-                              Text("Afficher les commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                              Text("Les commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             ],
                           ),
                         ),
