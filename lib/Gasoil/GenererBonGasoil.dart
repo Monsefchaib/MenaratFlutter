@@ -202,25 +202,29 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
                   if (vehiculeChoisie.nomVehicule == "Engins" &&
                       _choicePartner == "Partenaire") {
                     print("ENGINS PARTENAIRE");
+                    showAlertDialog(context);
+
                     await createBonEnginPartenaire();
 
                   }
                   if (vehiculeChoisie.nomVehicule != "Engins" &&
                       _choicePartner == "Partenaire") {
-                    print("VOITURE PARTENAIRE");
 
+                    print("VOITURE PARTENAIRE");
+                    showAlertDialog(context);
                     await createBonVehiculePartenaire();
                   }
                   if (vehiculeChoisie.nomVehicule != "Engins" &&
                       _choicePartner == "Autres") {
                     print("VOITURE AUTRES");
+                    showAlertDialog(context);
 
                     await createBonVehiculeAutres();
                   }
                   if (vehiculeChoisie.nomVehicule == "Engins" &&
                       _choicePartner == "Autres") {
                     print("Engins AUTRES");
-
+                    showAlertDialog(context);
                     await createBonEnginsAutres();
                   }
 
@@ -784,6 +788,21 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> {
     } else {
       throw Exception();
     }
+  }
+  showAlertDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 8),child:Text("Chargement ..." )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
   }
   void openPDF(BuildContext context, File file) => Navigator.of(context).push(
     MaterialPageRoute(builder: (context) => GetBonGenere(file: file)),

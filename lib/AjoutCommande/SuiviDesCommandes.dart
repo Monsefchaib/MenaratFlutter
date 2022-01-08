@@ -255,10 +255,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                                         //     const SnackBar(content: Text('Processing Data')),
                                         //   );
                                         // }
+                                         showAlertDialog(context);
                                          await createCommande();
                                         final url = await Commande.getPdfUrl();
                                         final file = await PDFApi.loadCommande(pdfURL!);
-                                        openPDF(context, file);
+                                         openPDF(context, file);
                                         },
                                       child: const Text('Ajouter la commande'),
                 ),
@@ -273,10 +274,11 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
   Future<String> createCommande() async {
     List<Article> listArticlesToSend = List<Article>.from(listArticles);
+    prixTotal=0;
     for(Article article in listArticlesToSend){
       prixTotal+=article.prixUnitaire!*article.quantite!;
     }
-    Commande commande = Commande("",List<Article>.from(listArticles),client,_controller.text,prixTotal,"","");
+    Commande commande = Commande.Noid(List<Article>.from(listArticles),client,_controller.text,prixTotal,"","");
     final result = await Commande.createCommande(commande);
     final title = 'Done';
     final text = result.error ? (result.errorMessage) : 'La commande a été ajoutée';
@@ -310,4 +312,20 @@ class MyCustomFormState extends State<MyCustomForm> {
   void openPDF(BuildContext context, File file) => Navigator.of(context).push(
     MaterialPageRoute(builder: (context) => GetBonGenere(file: file)),
   );
+
+  showAlertDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 8),child:Text("Chargement ..." )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
 }

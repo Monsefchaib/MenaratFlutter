@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color.fromRGBO(241, 241, 241, 1),
+        // scaffoldBackgroundColor: Color.fromRGBO(249, 249, 249, 1),
+        scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Lato',
         // This is the theme of your application.
         //

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:suiviventes/AjoutCommande/Livraisons/OrdreDeLivraison.dart';
+import 'package:suiviventes/AjoutCommande/ReserverCommande/ModifierCommande.dart';
 import 'package:suiviventes/AjoutCommande/ReserverCommande/ReserverCommande.dart';
 import 'package:suiviventes/Gasoil/GetBonGenere.dart';
 import 'package:suiviventes/Models/Commande.dart';
@@ -21,14 +23,20 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
  _ResumeDeLaCommandeState(this.commande,this.isCompleted);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FutureBuilder(
+        future: Commande.getCommandeById(commande!.id!),
+        builder: (context, AsyncSnapshot<Commande> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return  Scaffold(
       appBar: AppBar(title: Text("Details de la commande")),
-      body: ListView(
+      body:ListView(
         padding: const EdgeInsets.all(8.0),
         children: <Widget>[
           Container(
             color: Colors.white,
-            height: 60,
+            height: 80,
             width: double.infinity,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -37,10 +45,10 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                 children: [
                   Row(
                     children: [
-                      Text(commande!.id!, style: TextStyle(
+                      Text(snapshot.data!.id!, style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold,)),
                       Spacer(),
-                      Text(commande!.date! ,style: TextStyle(
+                      Text(snapshot.data!.date! ,style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold,))
                     ],
                   ),
@@ -52,8 +60,11 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                         width: 15,
                         fit: BoxFit.cover,),
                       SizedBox(width: 5), // give it width
-                      Text(commande!.client!.nom + " " + commande!.client!.prenom,
+                      Text(snapshot.data!.client!.nom + " " + snapshot.data!.client!.prenom,
                         style: TextStyle(fontSize: 13),),
+                      Spacer(),
+                      Text("Montant Total: " + "${snapshot.data!.prixTotal!}",style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold,))
                     ],
                   ),
 
@@ -68,7 +79,16 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ListView.builder(  itemCount: commande!.articles!.length,
+                Align(
+                  alignment: Alignment.topRight,
+                  child: !isCompleted!? new ElevatedButton(onPressed: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ModifierCommande(snapshot.data!))) .then((value) => setState(() {}));},
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.orangeAccent, // This is what you need!
+                      ),
+                      child: Text("Modifier les produits")) : Container(),
+                ),
+                Divider(thickness: 1,),
+                ListView.builder(  itemCount: snapshot.data!.articles!.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -78,11 +98,11 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                           children: [
                           Row(
                             children: [
-                              Text(commande!.articles![index].lot!.espece! + " : " + commande!.articles![index].lot!.variete!,style: TextStyle(
+                              Text(snapshot.data!.articles![index].lot!.espece! + " : " + snapshot.data!.articles![index].lot!.variete!,style: TextStyle(
                                   fontSize: 14)),
                               Spacer(),
                               Text("Quantité : "+
-                                  "${commande!.articles![index].quantite}",style: TextStyle(
+                                  "${snapshot.data!.articles![index].quantite}",style: TextStyle(
                                 fontSize: 14))
                             ],
                           ),
@@ -90,8 +110,8 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                             Row(
                               children: [
                                 Spacer(),
-                                Text("Prix : " +
-                                    "${commande!.articles![index].quantite!*commande!.articles![index].prixUnitaire!}" + "Dh",style: TextStyle(
+                                Text("Montant : " +
+                                    "${snapshot.data!.articles![index].quantite!*snapshot.data!.articles![index].prixUnitaire!}" + "Dh",style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold,))
                               ],
                             ),
@@ -115,7 +135,7 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                   ListTile(
                     onTap: () async{
                       showAlertDialog(context);
-                      final file = await PDFApi.loadCommande(commande!.commandePDF!);
+                      final file = await PDFApi.loadCommande(snapshot.data!.commandePDF!);
                       Navigator.pop(context);
                       openPDF(context, file);
                     },
@@ -128,33 +148,53 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                   )
 
             ),
+          ),
+          SizedBox(height: 10,),
+          Container(
+            color: Colors.white,
+            width: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                ListTile(
+                  onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new OrdreDeLivraison(snapshot.data!)));},
+                  leading:
+                  Text("Livraisons (${snapshot.data!.listOrdres!.length})",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                  trailing:
+                  Icon(Icons.keyboard_arrow_right),
+                )
+
+            ),
           )
 
 
         ],
       ),
+
        bottomNavigationBar: !isCompleted!? new BottomAppBar(
         child: Padding(
           padding: const EdgeInsets.only(right:8.0,left: 8.0),
           child: Row(
             children: <Widget>[
               Spacer(),
-              Text("Prix restent : ",style: TextStyle(
+              Text("Montant restant : ",style: TextStyle(
                   fontSize: 14)),
-              Text("${commande!.prixTotal}"+" Dh",style: TextStyle(
+              Text("${snapshot.data!.prixTotal}"+" Dh",style: TextStyle(
                   fontSize: 14,fontWeight: FontWeight.bold)),
               SizedBox(width: 10,),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red, // This is what you need!
                 ),
-                  onPressed: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ReserverCommande(commande!)));},
-                child: Text("Réserver la commande"),
+                  onPressed: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ReserverCommande(snapshot.data!)));},
+                child: Text("Avance"),
               )
             ],
           ),
         ),
       ): Row() ,
+    );
+        }
     );
   }
   void openPDF(BuildContext context, File file) => Navigator.of(context).push(
@@ -176,4 +216,6 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
       },
     );
   }
+
+
 }

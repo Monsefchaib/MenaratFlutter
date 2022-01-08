@@ -33,7 +33,7 @@ class _CommandesFinaliseState extends State<CommandesFinalise> {
                           ),
                           elevation: 2,
                           child: Container(
-                            height: 130,
+                            height: 150,
                             width: double.infinity,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

@@ -11,7 +11,7 @@ class _CommandesEnCoursState extends State<CommandesEnCours> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Commande.getCommandes("En Cours"),
+        future: Commande.getCommandes("avance"),
     builder: (context, AsyncSnapshot<List<Commande>> snapshot) {
     if (!snapshot.hasData) {
     return Center(child: CircularProgressIndicator());
@@ -24,14 +24,14 @@ class _CommandesEnCoursState extends State<CommandesEnCours> {
           Column(
             children: <Widget>[
               InkWell(
-                onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ResumeDeLaCommande(snapshot.data![i],false)));},
+                onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ResumeDeLaCommande(snapshot.data![i],false))).then((value) => setState(() {}));},
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   elevation: 2,
                   child: Container(
-                    height: 130,
+                    height: 150,
                     width: double.infinity,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -60,7 +60,7 @@ class _CommandesEnCoursState extends State<CommandesEnCours> {
                               Container(padding: const EdgeInsets.all(1.0),
                                 child: Text(snapshot.data![i].status!, style: TextStyle(
                                     fontSize: 13, color: Colors.white)),
-                                color: Colors.red,),
+                                color: snapshot.data![i].status! == 'Sans avance' ? Colors.red : Colors.orange,),
                             ],
                           ),
                           SizedBox(height: 5,), // <-- Spacer
