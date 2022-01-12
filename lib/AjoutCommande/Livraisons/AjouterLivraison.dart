@@ -28,6 +28,7 @@ class _AjouterLivraisonState extends State<AjouterLivraison> with InputValidatio
   _AjouterLivraisonState(this.ordre,this.commande,this.index,this.reste);
   final List<TextEditingController> _articlesController = List.generate(
       50, (i) => TextEditingController(),growable: true);
+  DateTime _date = DateTime.now();
 
 
   @override
@@ -90,7 +91,7 @@ class _AjouterLivraisonState extends State<AjouterLivraison> with InputValidatio
                       listToOrder.add(articleToOrder);
                     }
                   }
-                  Livraison livraison = new Livraison("10-12-2022",listToOrder);
+                  Livraison livraison = new Livraison("${_date.day}-${_date.month}-${_date.year}",listToOrder);
                   if(commande!.listOrdres![index].livraisons==null){
                     commande!.listOrdres![index].livraisons=[];
                     commande!.listOrdres![index].livraisons!.add(livraison);

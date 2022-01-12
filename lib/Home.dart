@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suiviventes/AjoutCommande/SuiviDesTraitements/AjouterTraitement.dart';
+import 'package:suiviventes/Gasoil/CarburantHome.dart';
 
 import 'Gasoil/GenererBon1.dart';
 import 'Gasoil/GenererBonGasoil.dart';
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
                      padding: const EdgeInsets.all(1.0),
                      child: Column(
                        children: <Widget>[
-                         Text("Ajouter une commande",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                         Text("Suivi des commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                        ],
                      ),
                    ),
@@ -53,7 +54,7 @@ class _HomeState extends State<Home> {
     ),
           Card(
             child: InkWell(
-            onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new GenererBonGasoil()),) },
+            onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new CarburantHome()),) },
             child: GridTile(
                 child:Image.asset('assets/images/gasoline.png',fit: BoxFit.fill,),
                 footer: Container(

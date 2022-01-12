@@ -4,6 +4,7 @@ import '../constants.dart';
 import 'package:http/http.dart' as http;
 
 class Lots{
+  String id;
   String? site;
   String? zone;
   String? espece;
@@ -11,16 +12,20 @@ class Lots{
   int? quantite;
   int? quantiteReservee;
 
-  Lots(this.site, this.zone, this.espece, this.variete, this.quantite,
+  Lots(this.id,this.site, this.zone, this.espece, this.variete, this.quantite,
       this.quantiteReservee);
+
 
   @override
   String toString() {
-    return 'Lots{site: $site, zone: $zone, espece: $espece, variete: $variete, quantite: $quantite, quantiteReservee: $quantiteReservee}';
+    return 'Lots{id: $id, site: $site, zone: $zone, espece: $espece, variete: $variete, quantite: $quantite, quantiteReservee: $quantiteReservee}';
   }
+
+
   Map toJson() {
 
     return {
+      'id':this.id,
       'site': this.site,
       'zone': this.zone,
       'espece': this.espece,
@@ -31,7 +36,14 @@ class Lots{
     };
   }
   factory Lots.fromJson(dynamic json) {
+    String? id="";
+    try {
+      id = json['id'] as String;
+    }catch(e){
+      id= json['_id'] as String;
+    }
     Lots lot = Lots(
+      id,
       json['site'] as String,
       json['zone'] as String,
       json['espece'] as String,

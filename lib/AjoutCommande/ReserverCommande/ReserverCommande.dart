@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:suiviventes/AjoutCommande/AfficherCommandes/AfficherCommandes.dart';
+import 'package:suiviventes/AjoutCommande/AfficherCommandes/ResumeDeLaCommande.dart';
 import 'package:suiviventes/Models/Avance.dart';
 import 'package:suiviventes/Models/Commande.dart';
 import 'package:suiviventes/Models/vehicule.dart';
@@ -14,12 +15,12 @@ import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
 
-double? prixTT;
+double? restePayer;
 class ReserverCommande extends StatefulWidget {
   Commande? commande;
-  ReserverCommande(Commande commande){
+  ReserverCommande(Commande commande,double resteAPayer){
     this.commande=commande;
-    prixTT=commande.prixTotal;
+    restePayer=resteAPayer;
   }
 
   @override
@@ -36,9 +37,9 @@ class _ReserverCommandeState extends State<ReserverCommande> {
   Commande? commande;
   _ReserverCommandeState(this.commande);
   TextEditingController avance = new TextEditingController();
-  TextEditingController reste = new TextEditingController()..text=prixTT.toString();
+  TextEditingController reste = new TextEditingController()..text=restePayer.toString();
   String _modePaiementValue = '';
-  var modePaiement=['','Espèce','Chèque'];
+  var modePaiement=['','Espèce','Chèque','Virement','Versement'];
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +94,7 @@ class _ReserverCommandeState extends State<ReserverCommande> {
                         onChanged: (value) {
                           setState(() {
                             double avance = double.tryParse(value) ?? 0;
-                             reste.text = (snapshot.data!.prixTotal! - avance).toString();
+                             reste.text = (restePayer! - avance).toString();
                           });
                         },
                       ),
@@ -145,7 +146,7 @@ class _ReserverCommandeState extends State<ReserverCommande> {
                         ),
                       ),
                       SizedBox(height: 20,),
-                      if(_modePaiementValue == "Chèque") ...[
+                      if(_modePaiementValue == "Virement" || _modePaiementValue == "Versement" || _modePaiementValue == "Chèque" ) ...[
                         bonImage(),
                       ],
                       SizedBox(height: 20,),
@@ -172,7 +173,7 @@ class _ReserverCommandeState extends State<ReserverCommande> {
                   showAlertDialog(context);
                   await ajouterAvance(commande!);
                   Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ResumeDeLaCommande(commande!,false)),);
                 },
                 child: Text("Ajouter avance"),
               )
@@ -288,6 +289,9 @@ class _ReserverCommandeState extends State<ReserverCommande> {
     return Stack(
       children: <Widget>[
         TextFormField(
+          minLines: 2,
+          maxLines: 5,
+          keyboardType: TextInputType.multiline,
           controller: _positionController,
           enabled: false,
           showCursor: true,
@@ -313,9 +317,8 @@ class _ReserverCommandeState extends State<ReserverCommande> {
                     position.latitude, position.longitude);
                 print(placemarks);
                 setState(() {
-                  _positionController.text = placemarks[0].street! + ", " +
-                      placemarks[0].subLocality! + ", " +
-                      placemarks[0].locality! + ", " + placemarks[0].country! +
+                  _positionController.text = placemarks[0].name!+ ", " +  placemarks[1].name!+", "+
+                      placemarks[0].locality! + ", " + placemarks[0].country! +", "+
                       placemarks[0].postalCode! + ", ";
                   isLoading = false;
                 });
