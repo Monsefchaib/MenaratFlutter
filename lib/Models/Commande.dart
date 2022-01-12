@@ -22,8 +22,8 @@ class Commande{
   List<Ordre>? listOrdres;
   List<Avance>? listAvances;
   Commande.Noid(this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF);
-  Commande(this.id,this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF,
-      this.listOrdres,this.listAvances
+  Commande(this.id,this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF,this.listOrdres,
+      this.listAvances
       );
   Commande.pdf(this.commandePDF);
 
@@ -59,18 +59,19 @@ class Commande{
   }
 
    factory Commande.fromJson(dynamic json) {
-
-    bool isListOrdres = true;
-    json['listOrdres'] ?? (isListOrdres = false);
     List<Ordre>? ordresList = [];
-      if(isListOrdres){
+     try{
      List<dynamic> jsonOrdres = json['listOrdres'];
       ordresList = List<Ordre>.from(jsonOrdres.map((i) => Ordre.fromJson(i)));
+     }catch(e){
      }
 
     List<dynamic> jsonArticles = json['articles'];
-    List<Article>? articlesList = List<Article>.from(jsonArticles.map((i) => Article.fromJson(i)));
-
+     List<Article>? articlesList = [];
+     try{
+       articlesList  = List<Article>.from(jsonArticles.map((i) => Article.fromJson(i)));
+     }catch(e){
+     }
     List<Avance>? listAvances = [];
     try{
       List<dynamic> jsonOrdres = json['listAvances'];
@@ -78,7 +79,13 @@ class Commande{
     }catch(e){
     }
 
-     Client client = new Client.fromJson(json['client']);
+    Client client = new Client("","","","");
+    try {
+      client = new Client.fromJson(json['client']);
+    }catch(e){
+
+    }
+
 
     Commande commande = Commande(
         json['_id'] as String,
@@ -88,7 +95,7 @@ class Commande{
         (json['prixTotal'] as num).toDouble(),
     json['status'] as String,
     json['commandePDF'] as String,
-    ordresList,
+        ordresList,
         listAvances
     );
     return commande;
@@ -119,9 +126,12 @@ class Commande{
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List commandes = json.decode(response.body);
-      List<Commande> listMapped =  commandes.map((json) => Commande.fromJson(json)).toList();
-      return listMapped;
+      List<Commande> listMapped =[];
 
+        listMapped = commandes.map((json) =>
+            Commande.fromJson(json)).toList();
+
+      return listMapped;
     } else {
       throw Exception();
     }

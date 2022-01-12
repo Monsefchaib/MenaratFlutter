@@ -18,6 +18,8 @@ class ResumeDeLaCommande extends StatefulWidget {
 }
 
 class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
+  bool stop=false;
+  double resteAPayer=0;
   Commande? commande;
  bool? isCompleted;
  _ResumeDeLaCommandeState(this.commande,this.isCompleted);
@@ -29,6 +31,7 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
+          calculReste();
           return  Scaffold(
       appBar: AppBar(title: Text("Details de la commande")),
       body:ListView(
@@ -141,7 +144,6 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                     },
                     leading:
                         Text("Bon de la commande",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
-
                     subtitle: Text("Voir le bon de la commande",style: TextStyle(color: Colors.grey),),
                     trailing:
                         Icon(Icons.keyboard_arrow_right),
@@ -165,6 +167,22 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                 )
 
             ),
+          ),
+          Container(
+            color: Colors.white,
+            width: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                ListTile(
+                  onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new OrdreDeLivraison(snapshot.data!)));},
+                  leading:
+                  Text("Avances (${snapshot.data!.listAvances!.length})",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                  trailing:
+                  Icon(Icons.keyboard_arrow_right),
+                )
+
+            ),
           )
 
 
@@ -179,14 +197,14 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
               Spacer(),
               Text("Montant restant : ",style: TextStyle(
                   fontSize: 14)),
-              Text("${snapshot.data!.prixTotal}"+" Dh",style: TextStyle(
+              Text("${resteAPayer}"+" Dh",style: TextStyle(
                   fontSize: 14,fontWeight: FontWeight.bold)),
               SizedBox(width: 10,),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red, // This is what you need!
                 ),
-                  onPressed: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ReserverCommande(snapshot.data!)));},
+                  onPressed: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ReserverCommande(snapshot.data!,resteAPayer))).then((value) => setState(() {this.calculReste();}));},
                 child: Text("Avance"),
               )
             ],
@@ -217,5 +235,14 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
     );
   }
 
+  calculReste() {
+    if (!stop) {
+      resteAPayer = commande!.prixTotal!;
+      for (int i = 0; i < commande!.listAvances!.length; i++) {
+        resteAPayer -= commande!.listAvances![i].montant!;
+      }
+      stop=true;
+    }
+  }
 
 }

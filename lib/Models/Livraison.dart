@@ -8,6 +8,13 @@ class Livraison{
 
   Livraison(this.date, this.articlesLivree);
 
+  Livraison.vide();
+
+  @override
+  String toString() {
+    return 'Livraison{date: $date, articlesLivree: $articlesLivree}';
+  }
+
   Map<String, dynamic> toJson() {
     List? articlesLivree =
     this.articlesLivree != null ? this.articlesLivree!.map((i) => i.toJson()).toList() : null;

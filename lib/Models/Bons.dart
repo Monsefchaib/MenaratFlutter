@@ -9,6 +9,7 @@ import 'api_response.dart';
 
 String? pdfURLL;
 class Bons{
+  String? id;
   String? date;
   String? type;
   Vehicule? vehicule;
@@ -16,7 +17,7 @@ class Bons{
   String? kilometrage;
   String? justifUrl;
   String? location;
-  String? montant;
+  double? montant;
   String? pdfUrl;
 
 
@@ -29,6 +30,10 @@ class Bons{
 
   Bons.autresEngins(this.date, this.type, this.engins, this.justifUrl,
       this.location, this.montant);
+
+
+  Bons(this.id, this.date, this.type, this.vehicule, this.engins, this.kilometrage,
+      this.justifUrl, this.location, this.montant, this.pdfUrl);
 
   Bons.pdfURL(this.pdfUrl);
 
@@ -61,6 +66,59 @@ class Bons{
     return client;
   }
 
+  factory Bons.AllfromJson(dynamic json) {
+
+
+    List<Engins>? listEngins = [];
+    try{
+      List<dynamic> jsonOrdres = json['engins'];
+      listEngins =  List<Engins>.from(jsonOrdres.map((i) => Engins.fromJson(i)));
+    }catch(e){
+    }
+
+    Vehicule vehicule = new Vehicule("","","",0);
+    try {
+      vehicule = new Vehicule.fromJson(json['vehicule']);
+    }catch(e){
+
+    }
+
+    String justifUrl = " ";
+    try{
+      justifUrl = json['justifUrl'] as String;
+    }catch(e){
+
+    }
+
+    String location = " ";
+    try{
+      location = json['location'] as String;
+    }catch(e){
+
+    }
+    String kilometrage = " ";
+    try{
+      kilometrage = json['kilometrage'] as String;
+    }catch(e){
+
+    }
+
+
+    Bons bon = Bons(
+      json['_id'] as String,
+        json['date'] as String,
+        json['type'] as String,
+        vehicule,
+        listEngins,
+        kilometrage,
+        justifUrl,
+        location,
+        (json['montant'] as num).toDouble(),
+      json['pdfUrl'] as String
+    );
+    return bon;
+  }
+
   Future<APIResponse<bool>> createBon(Bons bon) {
     return http.post(Uri.parse("http://$urlApi:3000/bons"), headers: {
       "Content-Type": "application/json",
@@ -81,8 +139,36 @@ class Bons{
             error: true, errorMessage: 'An error occured', data: false));
   }
 
+  static Future<List<Bons>> getBons() async {
+    final url = Uri.parse('http://$urlApi:3000/bons/');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List bons = json.decode(response.body);
+      List<Bons> listMapped =[];
+
+      listMapped = bons.map((json) =>
+          Bons.AllfromJson(json)).toList();
+      return listMapped;
+    } else {
+      throw Exception();
+    }
+  }
+
+  static Future<Bons> getBonById(String? id) async {
+    final url = Uri.parse('http://$urlApi:3000/bons/byId/$id');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonData = json.decode(response.body);
+      Bons bon = new Bons.AllfromJson(jsonData);
+      return bon;
+
+    } else {
+      throw Exception();
+    }
+  }
+
+
   static String? getPdfUrl(){
-    print(pdfURLL);
     return pdfURLL;
   }
 

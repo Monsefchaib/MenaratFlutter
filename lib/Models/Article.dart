@@ -5,7 +5,7 @@ class Article{
   String? substrat;
   String? conteneur;
   double? prixUnitaire;
-  double? quantite;
+  int? quantite;
 
   Article(this.lot, this.substrat, this.conteneur, this.prixUnitaire,
       this.quantite);
@@ -28,11 +28,12 @@ class Article{
   }
  factory Article.fromJson(dynamic json) {
    Article article = Article(
+
       Lots.fromJson(json['lot']),
       json['substrat'] as String,
       json['conteneur'] as String,
      (json['prixUnitaire'] as num).toDouble(),
-     (json['quantite'] as num).toDouble(),
+     (json['quantite'] as num).toInt(),
    );
     return article;
   }

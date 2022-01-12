@@ -1,6 +1,6 @@
 class Engins{
   String nom;
-  String montant;
+  double montant;
 
   Engins(this.nom, this.montant);
 
@@ -13,7 +13,7 @@ class Engins{
   factory Engins.fromJson(dynamic json) {
     Engins engine = Engins(
       json['nom'] as String,
-      json['montant'] as String,
+      (json['montant'] as num).toDouble(),
     );
     return engine;
   }

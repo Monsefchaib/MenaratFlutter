@@ -65,7 +65,7 @@ class _ModifierArticleState extends State<ModifierArticle> {
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               article!.prixUnitaire=double.parse(FprixUnitaire.text);
-              article!.quantite=double.parse(FnbrPlantes.text);
+              article!.quantite=int.parse(FnbrPlantes.text);
               Navigator.pop(context, article);
             },
               child:Text("Modifier l'article"),

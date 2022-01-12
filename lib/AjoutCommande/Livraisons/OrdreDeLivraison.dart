@@ -17,11 +17,14 @@ class OrdreDeLivraison extends StatefulWidget {
 }
 
 class _OrdreDeLivraisonState extends State<OrdreDeLivraison> {
+  Ordre ordre = new Ordre.vide();
+  List<Ordre> listRestes = [];
   bool stop = false;
-  List<int> reste =  List.generate(
-      50, (i) => 0,growable: true);
-  List<int>? totalLivraisons = List.generate(
-      50, (i) => 0,growable: true);
+  var reste = List.generate(50, (i) => List.filled(50, 0, growable: true), growable: true);
+  var totalLivraisons = List.generate(50, (i) => List.filled(50, 0, growable: true), growable: true);
+  //
+  // List<int>? totalLivraisons = List.generate(
+  //     2, (i) => 0,growable: true);
   Commande? commande;
   _OrdreDeLivraisonState(this.commande);
   @override
@@ -62,7 +65,7 @@ class _OrdreDeLivraisonState extends State<OrdreDeLivraison> {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
                         }
-                        calculResteLivraison(snapshot.data!.listOrdres![index]);
+                        calculResteLivraison(snapshot.data!.listOrdres!);
                         return    Container(
                             decoration: BoxDecoration(
                             color: Colors.white,
@@ -97,8 +100,9 @@ class _OrdreDeLivraisonState extends State<OrdreDeLivraison> {
                                             Spacer(),
 
                                             Text("Reste à livrer : " + "${
-                                                reste[i]
-                                            }",style: TextStyle(
+                                                reste[index][i]
+                                            }"
+                                                ,style: TextStyle(
                                                 fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey)),
 
                                           ],
@@ -116,7 +120,7 @@ class _OrdreDeLivraisonState extends State<OrdreDeLivraison> {
                                       primary: Colors.indigo, // This is what you need!
                                     ), ),
                                   Spacer(),
-                                  ElevatedButton(onPressed: ()  async { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AjouterLivraison(snapshot.data!.listOrdres![index],snapshot.data!,index,reste))).then((value) => setState(() {}));},
+                                  ElevatedButton(onPressed: ()  async { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AjouterLivraison(snapshot.data!.listOrdres![index],snapshot.data!,index,reste[index]))).then((value) => setState(() {}));},
                                     child: Text("Livrer"), style: ElevatedButton.styleFrom(
                                       primary: Colors.red, // This is what you need!
                                     ), ),
@@ -137,19 +141,32 @@ class _OrdreDeLivraisonState extends State<OrdreDeLivraison> {
   }
 
 
-  calculResteLivraison(Ordre ordre ) {
+  calculResteLivraison(List<Ordre> listOrders ) {
     if (!stop) {
-      for (int i = 0; i < ordre.livraisons!.length; i++) {
-        for (int j = 0; j < ordre.livraisons![i].articlesLivree!.length; j++) {
-          totalLivraisons![j] +=
-          ordre.livraisons![i].articlesLivree![j].nombreALivrer!;
+      for (int i = 0; i < listOrders.length; i++) {
+        for(int j=0;j<listOrders[i].itemsToOrder!.length;j++){
+          reste[i][j] = listOrders[i].itemsToOrder![j].nombreALivrer!;
         }
       }
-      for (int i = 0; i < ordre.itemsToOrder!.length; i++) {
-        reste[i] += ordre.itemsToOrder![i].nombreALivrer! - totalLivraisons![i];
+      for (int i = 0; i < listOrders.length; i++) {
+        for (int j = 0; j < listOrders[i].livraisons!.length; j++) {
+          for(int k=0;k<listOrders[i].livraisons![j].articlesLivree!.length;k++){
+            totalLivraisons[i][k]+= listOrders[i].livraisons![j].articlesLivree![k].nombreALivrer!;
+          }
+        }
       }
+      for(int i=0;i<reste.length;i++){
+        for(int j=0;j<reste.length;j++){
+          reste[i][j]=reste[i][j]-totalLivraisons[i][j];
+        }
+
+      }
+
+
       stop = true;
     }
+
+
   }
 
 }

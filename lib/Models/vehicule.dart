@@ -7,15 +7,17 @@ import '../constants.dart';
 import 'package:http/http.dart' as http;
 
 class Vehicule{
+  String id;
   String nomVehicule;
   String immatricule;
-  String kilometrage;
+  int kilometrage;
 
-  Vehicule(this.nomVehicule, this.immatricule, this.kilometrage);
+  Vehicule(this.id,this.nomVehicule, this.immatricule, this.kilometrage);
+
 
   @override
   String toString() {
-    return 'Vehicule{nomVehicule: $nomVehicule, immatricule: $immatricule, kilometrage: $kilometrage}';
+    return 'Vehicule{id: $id, nomVehicule: $nomVehicule, immatricule: $immatricule, kilometrage: $kilometrage}';
   }
 
   static Future<List<Vehicule>> getVehicules() async {
@@ -33,7 +35,7 @@ class Vehicule{
 
   Map<String, dynamic> toJson() =>
       {
-
+        'id':this.id,
         'nomVehicule': this.nomVehicule,
         'immatricule': this.immatricule,
         'kilometrage': this.kilometrage,
@@ -41,16 +43,23 @@ class Vehicule{
       };
 
   factory Vehicule.fromJson(dynamic json) {
+    String? id="";
+    try {
+      id = json['id'] as String;
+    }catch(e){
+      id= json['_id'] as String;
+    }
     Vehicule vehicule = Vehicule(
+      id,
       json['nomVehicule'] as String,
       json['immatricule'] as String,
-      json['kilometrage'] as String,
+      (json['kilometrage'] as num).toInt(),
     );
     return vehicule;
   }
 
  static NetworkImage getImage(String imageName){
-    String url = "http://$urlApi:3000/vehicules/image/763c7e2c2d05ee7c5576dd7bb2fb7fee";
+    String url = "http://$urlApi:3000/vehicules/image/${imageName}";
     return NetworkImage(url);
   }
 

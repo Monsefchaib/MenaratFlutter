@@ -18,7 +18,7 @@ class _GenererBon2State extends State<GenererBon2> {
     _getStateList();
 
   }
-Vehicule vehiculeChoisie = Vehicule("","","");
+Vehicule vehiculeChoisie = Vehicule("","","",0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

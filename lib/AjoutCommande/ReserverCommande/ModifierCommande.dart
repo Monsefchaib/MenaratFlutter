@@ -16,7 +16,7 @@ class ModifierCommande extends StatefulWidget {
 }
 
 class _ModifierCommandeState extends State<ModifierCommande> {
-  Article article = Article(Lots(" ", " ", " ", " ", 0, 0),"","",0,0);
+  Article article = Article(Lots(" "," ", " ", " ", " ", 0, 0),"","",0,0);
   Commande? commande;
 
   _ModifierCommandeState(this.commande);
