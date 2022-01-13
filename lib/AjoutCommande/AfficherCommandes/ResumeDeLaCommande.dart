@@ -143,14 +143,36 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                       openPDF(context, file);
                     },
                     leading:
-                        Text("Bon de la commande",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
-                    subtitle: Text("Voir le bon de la commande",style: TextStyle(color: Colors.grey),),
+                        Text("Facture de la commande",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                    subtitle: Text("Voir la facture de la commande",style: TextStyle(color: Colors.grey),),
                     trailing:
                         Icon(Icons.keyboard_arrow_right),
                   )
 
             ),
           ),
+          snapshot.data!.lienSuiviPDF != " " ?Container(
+            color: Colors.white,
+            width: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                ListTile(
+                  onTap: () async{
+                    showAlertDialog(context);
+                    final file = await PDFApi.loadCommande(snapshot.data!.lienSuiviPDF!);
+                    Navigator.pop(context);
+                    openPDF(context, file);
+                  },
+                  leading:
+                  Text("Suivi de la commande",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                  subtitle: Text("Voir le suivi de la commande",style: TextStyle(color: Colors.grey),),
+                  trailing:
+                  Icon(Icons.keyboard_arrow_right),
+                )
+
+            ),
+          ): Container(),
           SizedBox(height: 10,),
           Container(
             color: Colors.white,

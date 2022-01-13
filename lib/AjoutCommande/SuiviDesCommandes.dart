@@ -96,7 +96,6 @@ class MyCustomFormState extends State<MyCustomForm> with InputValidationMixin{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("https://us-east-1.aws.data.mongodb-api.com/app/mah-realm-qnyzv/endpoint/getCommandes?s=avance"),
                 SizedBox(height: 10,),
                 Text("Ajouter une commande :",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
                 SizedBox(height: 20,),

@@ -43,7 +43,6 @@ class _AddClientsState extends State<AddClients> {
                     Text("Créer un nouveau client")),
                   ),
                   SizedBox(height:10),
-                  Divider(),
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Chercher un client existant :")),

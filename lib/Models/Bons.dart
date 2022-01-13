@@ -103,6 +103,19 @@ class Bons{
 
     }
 
+    String pdfUrl = " ";
+    try{
+     pdfUrl =  json['pdfUrl'] as String;
+    }catch(e){
+
+    }
+
+    double montant = 0;
+    try{
+      montant = (json['montant'] as num).toDouble();
+    }catch(e){
+
+    }
 
     Bons bon = Bons(
       json['_id'] as String,
@@ -113,8 +126,8 @@ class Bons{
         kilometrage,
         justifUrl,
         location,
-        (json['montant'] as num).toDouble(),
-      json['pdfUrl'] as String
+        montant,
+        pdfUrl,
     );
     return bon;
   }
@@ -127,7 +140,7 @@ class Bons{
       if (data.statusCode == 201) {
         print("bien fait");
         var jsonData = jsonDecode(data.body);
-        Bons bon = new Bons.fromJson(jsonData);
+        Bons bon = new Bons.AllfromJson(jsonData);
         GenererBonGasoil.pdfSetUrl(bon.pdfUrl!);
         return APIResponse<bool>(data: true, errorMessage: "");
       }

@@ -419,7 +419,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
     String? imageResponse;
     if (_imageFile!.path != null) {
       imageResponse = await uploadImage(
-          _imageFile!.path, "hhhh");
+          _imageFile!.path, " ");
       print(imageResponse);
     };
 
@@ -459,15 +459,15 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
   Future<String> uploadImage(filename, url) async {
     print("send image");
     var request = http.MultipartRequest(
-        'POST', Uri.parse("http://$urlApi:3000/vehicules/image/"));
-    request.files.add(await http.MultipartFile.fromPath('image', filename));
+        'POST', Uri.parse("http://$urlApi:3000/media/"));
+    request.files.add(await http.MultipartFile.fromPath('file', filename));
     var res = await request.send();
     // var response = await http.Response.fromStream(res);
     var responseString = await res.stream.bytesToString();
-    var imageName = json.decode(responseString);
-    _importJustif.text = imageName.map((m) => m['filename']).toString()
-        .replaceAll("(", "")
-        .replaceAll(")", "");
+    // var imageName = json.decode(responseString);
+    // _importJustif.text = imageName.map((m) => m['filename']).toString()
+    //     .replaceAll("(", "")
+    //     .replaceAll(")", "");
     return res.reasonPhrase!;
   }
 
@@ -691,6 +691,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
   void takePhoto(ImageSource source) async {
     final pickedFile = await _picker.pickImage(
       source: source,
+      imageQuality: 25,
     );
     final fileName = path.basename(pickedFile!.path);
     print(fileName);

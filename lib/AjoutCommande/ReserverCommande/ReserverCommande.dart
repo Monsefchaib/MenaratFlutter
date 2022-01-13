@@ -271,15 +271,15 @@ class _ReserverCommandeState extends State<ReserverCommande> {
   Future<String> uploadImage(filename, url) async {
     print("send image");
     var request = http.MultipartRequest(
-        'POST', Uri.parse("http://$urlApi:3000/avances/image/"));
-    request.files.add(await http.MultipartFile.fromPath('image', filename));
+        'POST', Uri.parse("http://$urlApi:3000/media/"));
+    request.files.add(await http.MultipartFile.fromPath('file', filename));
     var res = await request.send();
     // var response = await http.Response.fromStream(res);
     var responseString = await res.stream.bytesToString();
-    var imageName = json.decode(responseString);
-    _importJustif.text = imageName.map((m) => m['filename']).toString()
-        .replaceAll("(", "")
-        .replaceAll(")", "");
+    // var imageName = json.decode(responseString);
+    // _importJustif.text = imageName.map((m) => m['filename']).toString()
+    //     .replaceAll("(", "")
+    //     .replaceAll(")", "");
     return res.reasonPhrase!;
   }
 

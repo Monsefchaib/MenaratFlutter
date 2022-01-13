@@ -59,7 +59,7 @@ class Vehicule{
   }
 
  static NetworkImage getImage(String imageName){
-    String url = "http://$urlApi:3000/vehicules/image/${imageName}";
+    String url = "http://$urlApi:3000/media/${imageName}";
     return NetworkImage(url);
   }
 
