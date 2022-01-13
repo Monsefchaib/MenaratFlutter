@@ -34,8 +34,7 @@ class _AjouterClientState extends State<AjouterClient> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
               ),
             ),
-            Divider(thickness: 1,),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             TextFormField(
               controller: prenomClient,
               decoration:  InputDecoration(
@@ -46,20 +45,7 @@ class _AjouterClientState extends State<AjouterClient> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
               ),
             ),
-            Divider(thickness: 1,),
-            SizedBox(height: 10,),
-            TextFormField(
-              controller: adresseClient,
-              decoration:  InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                labelText: 'Adresse',
-                border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-              ),
-            ),
-            Divider(thickness: 1,),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             TextFormField(
               controller: telephoneClient,
               keyboardType: TextInputType.number,
@@ -72,7 +58,18 @@ class _AjouterClientState extends State<AjouterClient> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
+            TextFormField(
+              controller: adresseClient,
+              decoration:  InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 15.0),
+                labelText: 'Adresse',
+                border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+              ),
+            ),
+            SizedBox(height: 20,),
             ElevatedButton(onPressed: () async {
               Client client = new Client(nomClient.text,prenomClient.text,telephoneClient.text,adresseClient.text);
               print(client.toString());

@@ -20,11 +20,12 @@ class Commande{
   String? commandePDF;
   String? status;
   List<Ordre>? listOrdres;
+  String? lienSuiviPDF;
   List<Avance>? listAvances;
   Commande.Noid(this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF);
   Commande(this.id,this.articles, this.client, this.date, this.prixTotal,this.status,this.commandePDF,this.listOrdres,
-      this.listAvances
-      );
+      this.listAvances,
+      this.lienSuiviPDF);
   Commande.pdf(this.commandePDF);
 
 
@@ -85,6 +86,12 @@ class Commande{
     }catch(e){
 
     }
+    String lienSuiviPdf= " ";
+    try{
+      lienSuiviPdf=json['lienSuiviPDF'] as String;
+    }catch(e){
+
+    }
 
 
     Commande commande = Commande(
@@ -96,7 +103,8 @@ class Commande{
     json['status'] as String,
     json['commandePDF'] as String,
         ordresList,
-        listAvances
+        listAvances,
+        lienSuiviPdf,
     );
     return commande;
   }
