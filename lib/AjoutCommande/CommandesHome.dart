@@ -33,16 +33,9 @@ class _CommandesHomeState extends State<CommandesHome> {
                     // header: Container(child: Image.network('https://cdn-icons.flaticon.com/png/512/4862/premium/4862389.png?token=exp=1638558488~hmac=380e232ba8604e14729be05e6d36d408')),
                     footer: Container(
                       color: Colors.white70,
-                      child: ListTile(
-                        leading: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: Column(
-                            children: <Widget>[
+                      child:
                               Text("Ajouter une commande",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                      ),
+
                     )
                 ),
               ),
@@ -54,16 +47,9 @@ class _CommandesHomeState extends State<CommandesHome> {
                     child:Image.asset('assets/images/clipboard.png',fit: BoxFit.fill,),
                     footer: Container(
                       color: Colors.white70,
-                      child: ListTile(
-                        leading: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: Column(
-                            children: <Widget>[
+                      child:
                               Text("Les commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                      ),
+
                     )
                 ),
               ),
@@ -75,16 +61,9 @@ class _CommandesHomeState extends State<CommandesHome> {
                     child:Image.asset('assets/images/gasoline.png',fit: BoxFit.fill,),
                     footer: Container(
                       color: Colors.white70,
-                      child: ListTile(
-                        leading: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: Column(
-                            children: <Widget>[
+                      child:
                               Text("Afficher les commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                      ),
+
                     )
                 ),
               ),

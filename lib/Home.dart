@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suiviventes/AjoutCommande/SuiviDesTraitements/AjouterTraitement.dart';
+import 'package:suiviventes/AjoutCommande/SuiviDesTraitements/ListeDesTaches.dart';
 import 'package:suiviventes/Gasoil/CarburantHome.dart';
 
 import 'Gasoil/GenererBon1.dart';
@@ -38,17 +39,9 @@ class _HomeState extends State<Home> {
              // header: Container(child: Image.network('https://cdn-icons.flaticon.com/png/512/4862/premium/4862389.png?token=exp=1638558488~hmac=380e232ba8604e14729be05e6d36d408')),
                footer: Container(
                  color: Colors.white70,
-                 child: ListTile(
-                   leading: Padding(
-                     padding: const EdgeInsets.all(1.0),
-                     child: Column(
-                       children: <Widget>[
-                         Text("Suivi des commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                       ],
-                     ),
-                   ),
-                 ),
-               )
+                 child:
+                 Text("Suivi des commandes",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+               ),
            ),
          ),
     ),
@@ -59,38 +52,28 @@ class _HomeState extends State<Home> {
                 child:Image.asset('assets/images/gasoline.png',fit: BoxFit.fill,),
                 footer: Container(
                   color: Colors.white70,
-                  child: ListTile(
-                    leading: Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Column(
-                        children: <Widget>[
+
+                      child: Container(
+                        child:
                           Text("Suivi Consommation Carburant",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                        ],
                       ),
-                    ),
-                  ),
                 )
             ),
           ),
     ),
           Card(
             child: InkWell(
-              onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AjouterTraitement()),) },
+              onTap: ()=> {Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new ListeDesTaches()),) },
               child: GridTile(
                   child:Image.asset('assets/images/leaf.png',fit: BoxFit.fill,),
                   // header: Container(child: Image.network('https://cdn-icons.flaticon.com/png/512/4862/premium/4862389.png?token=exp=1638558488~hmac=380e232ba8604e14729be05e6d36d408')),
                   footer: Container(
+                    width: double.infinity,
                     color: Colors.white70,
-                    child: ListTile(
-                      leading: Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Column(
-                          children: <Widget>[
+                        child: Container(
+                          child:
                             Text("Suivi des traitements",style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                          ],
                         ),
-                      ),
-                    ),
                   )
               ),
             ),

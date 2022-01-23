@@ -55,11 +55,11 @@ class MyCustomFormState extends State<MyCustomForm> with InputValidationMixin{
   bool _isProduit = false;
   double prixTotal = 0;
   DateTime now = new DateTime.now();
-  Lots lot = Lots(" "," ", " ", " ", " ", 0, 0);
+  Lots lot = Lots(" "," ", " ", " ", " "," "," "," ",0," "," ", " ", " ",0);
   List listArticles = [];
   Client client = Client(" "," "," "," ");
   bool trans=false;
-  Article article = Article(Lots(" "," ", " ", " ", " ", 0, 0),"","",0,0);
+  Article article = Article(Lots(" "," ", " ", " ", " "," "," "," ",0," "," ", " ", " ",0),0,0);
   bool isProduits=false;
   bool isArticles=false;
   Transport transport = new Transport("","","");
@@ -213,52 +213,6 @@ class MyCustomFormState extends State<MyCustomForm> with InputValidationMixin{
                   ),
                 ),
                 ],
-                // InkWell(
-                //   onTap: () async {transport = await Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new TransportPage())) ;
-                //     if(transport != null){
-                //       print(transport.nomChauffeur);
-                //     }
-                //     setState(() {
-                //       transport=transport;
-                //       trans=true;
-                //     });
-                //   },
-                //   child: Column(
-                //     children: [
-                //       ListTile(
-                //         title: Text("Transport",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
-                //         subtitle: Text("Ajouter une methode de transport"),
-                //         trailing: Wrap(
-                //           spacing: 12, // space between two icons
-                //           children: <Widget>[
-                //             Icon(Icons.add),
-                //             // icon-2
-                //           ],
-                //         ),
-                //
-                //       ),
-                //         if(trans==true)...[
-                //         Align(
-                //           alignment: Alignment.centerLeft,
-                //           child: Container(
-                //             child: Column(
-                //               mainAxisAlignment: MainAxisAlignment.start,
-                //               crossAxisAlignment: CrossAxisAlignment.start,
-                //               children: <Widget>[
-                //                     Text("Chauffeur :",style: TextStyle(fontWeight: FontWeight.bold)),
-                //                     Text(transport.nomChauffeur),
-                //                     Text("Numéro de télephone :",style: TextStyle(fontWeight: FontWeight.bold)),
-                //                     Text(transport.numTelephone),
-                //                     Text("Immatriculation de son véhicule :",style: TextStyle(fontWeight: FontWeight.bold)),
-                //                     Text(transport.immVehicule),
-                //                   ],
-                //                 ),
-                //             ),
-                //         ),
-                //           ],
-                //     ],
-                //   ),
-                // ),
                 Divider(thickness: 1,),
                 Align(
                   alignment: Alignment.center,

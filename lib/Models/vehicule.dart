@@ -21,7 +21,7 @@ class Vehicule{
   }
 
   static Future<List<Vehicule>> getVehicules() async {
-    final url = Uri.parse('http://$urlApi:3000/vehicules');
+    final url = Uri.parse('${urlApi}/vehicules');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List vehicules = json.decode(response.body);
@@ -59,13 +59,13 @@ class Vehicule{
   }
 
  static NetworkImage getImage(String imageName){
-    String url = "http://$urlApi:3000/media/${imageName}";
+    String url = "${urlApi}/media/${imageName}";
     return NetworkImage(url);
   }
 
  static Future<String> uploadImage(filename, url) async {
     print("send image");
-    var request = http.MultipartRequest('POST', Uri.parse("http://$urlApi:3000/vehicules/image/"));
+    var request = http.MultipartRequest('POST', Uri.parse("${urlApi}/vehicules/image/"));
     request.files.add(await http.MultipartFile.fromPath('image', filename));
     var res = await request.send();
     // var response = await http.Response.fromStream(res);

@@ -56,7 +56,7 @@ class Produit {
       }
 
   static Future<List<Produit>> getProduits() async {
-    final url = Uri.parse('http://$urlApi:3000/produits/');
+    final url = Uri.parse('${urlApi}/produits/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List lots = json.decode(response.body);

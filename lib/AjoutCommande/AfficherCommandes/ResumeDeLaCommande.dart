@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:suiviventes/AjoutCommande/AfficherCommandes/AfficherAvances.dart';
 import 'package:suiviventes/AjoutCommande/Livraisons/OrdreDeLivraison.dart';
 import 'package:suiviventes/AjoutCommande/ReserverCommande/ModifierCommande.dart';
 import 'package:suiviventes/AjoutCommande/ReserverCommande/ReserverCommande.dart';
@@ -197,7 +198,7 @@ class _ResumeDeLaCommandeState extends State<ResumeDeLaCommande> {
                 padding: const EdgeInsets.all(8.0),
                 child:
                 ListTile(
-                  onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new OrdreDeLivraison(snapshot.data!)));},
+                  onTap: () { Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new AfficherAvances(snapshot.data!.listAvances)));},
                   leading:
                   Text("Avances (${snapshot.data!.listAvances!.length})",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
                   trailing:

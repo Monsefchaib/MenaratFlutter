@@ -23,7 +23,7 @@ class _AddEspecesState extends State<AddEspeces> with InputValidationMixin{
   final formGlobalKey = GlobalKey < FormState > ();
   String _substratValue = '';
   String _conteneurValue = '';
-  Lots lot = Lots(" "," ", " ", " ", " ", 0, 0);
+  Lots lot = Lots(" "," ", " ", " ", " "," "," "," ",0," "," ", " ", " ",0);
   bool isLots = false;
   List listLots = [];
   var susbtrat=['','SOL','TOURBE'];
@@ -79,78 +79,6 @@ class _AddEspecesState extends State<AddEspeces> with InputValidationMixin{
                       ),
                     ),
                     SizedBox(height: 20,),
-                    InputDecorator(
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        labelText: 'Substrat',
-                        border:
-                        OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      ),
-                      child:DropdownButton<String>(
-                        isExpanded: true,
-                        value: _substratValue,
-                        icon: const Icon(Icons.arrow_circle_down),
-                        iconSize: 20,
-                        elevation: 16,
-                        underline: Container(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _substratValue = newValue!;
-                            print(_substratValue);
-                          });
-                        },
-                        items: List.generate(
-                          susbtrat.length,
-                              (index) => DropdownMenuItem(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                  susbtrat[index]
-                              ),
-                            ),
-                            value: susbtrat[index],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    InputDecorator(
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 15.0),
-                        labelText: 'Conteneur',
-                        border:
-                        OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      ),
-                      child:DropdownButton<String>(
-                        isExpanded: true,
-                        value: _conteneurValue,
-                        icon: const Icon(Icons.arrow_circle_down),
-                        iconSize: 20,
-                        elevation: 16,
-                        underline: Container(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _conteneurValue = newValue!;
-                            print(_conteneurValue);
-                          });
-                        },
-                        items: List.generate(
-                          conteneur.length,
-                              (index) => DropdownMenuItem(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                  conteneur[index]
-                              ),
-                            ),
-                            value: conteneur[index],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20,),
                     TextFormField(
                       validator: (montant) {
                         if (isNombreValide(int.tryParse(montant==null?"0":montant) ?? 0,lot)) return null;
@@ -195,7 +123,7 @@ class _AddEspecesState extends State<AddEspeces> with InputValidationMixin{
                     ),
                     SizedBox(height: 20,),
                     ElevatedButton(onPressed: (){
-                      Article article = Article(lot, _substratValue, _conteneurValue, double.parse(FprixUnitaire.text),int.parse(FnbrPlantes.text));
+                      Article article = Article(lot, double.parse(FprixUnitaire.text),int.parse(FnbrPlantes.text));
                       print(article.lot);
                       Navigator.pop(context, article);
                       },

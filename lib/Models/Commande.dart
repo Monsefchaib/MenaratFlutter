@@ -100,8 +100,8 @@ class Commande{
         client,
         json['date'] as String,
         (json['prixTotal'] as num).toDouble(),
-    json['status'] as String,
-    json['commandePDF'] as String,
+        json['status'] as String,
+         json['commandePDF'] as String,
         ordresList,
         listAvances,
         lienSuiviPdf,
@@ -110,7 +110,7 @@ class Commande{
   }
 
  static Future<APIResponse<bool>> createCommande(Commande commande) {
-    return http.post(Uri.parse("http://$urlApi:3000/commandes"), headers: {
+    return http.post(Uri.parse("${urlApi}/commandes"), headers: {
       "Content-Type": "application/json",
       "accept": "application/json",
     }, body: json.encode(commande.toJson())).then((data) {
@@ -130,7 +130,7 @@ class Commande{
   }
 
   static Future<List<Commande>> getCommandes(String? s) async {
-    final url = Uri.parse('http://$urlApi:3000/commandes/filter?s=$s');
+    final url = Uri.parse('${urlApi}/commandes/filter?s=$s');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List commandes = json.decode(response.body);
@@ -146,7 +146,7 @@ class Commande{
   }
 
   static Future<APIResponse<bool>> updateCommande(Commande commande) {
-    return http.patch(Uri.parse("http://$urlApi:3000/commandes/${commande.id}"), headers: {
+    return http.patch(Uri.parse("${urlApi}/commandes/${commande.id}"), headers: {
       "Content-Type": "application/json",
       "accept": "application/json",
     }, body: json.encode(commande.toJson())).then((data) {
@@ -166,13 +166,12 @@ class Commande{
   }
 
   static Future<Commande> getCommandeById(String? id) async {
-    final url = Uri.parse('http://$urlApi:3000/commandes/byId/$id');
+    final url = Uri.parse('${urlApi}/commandes/byId/$id');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
       Commande commande = new Commande.fromJson(jsonData);
       return commande;
-
     } else {
       throw Exception();
     }

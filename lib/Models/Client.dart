@@ -32,7 +32,7 @@ class Client {
       };
 
   static Future<List<Client>> getClientSuggestions(String query) async {
-    final url = Uri.parse('http://$urlApi:3000/clients');
+    final url = Uri.parse('${urlApi}/clients');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List clients = json.decode(response.body);
@@ -52,7 +52,7 @@ class Client {
   Future<APIResponse<bool>> createClient(Client client) {
     print("ana hna");
     String API = "http://172.20.10.2:3000";
-    return http.post(Uri.parse("http://$urlApi:3000/clients"), headers: {
+    return http.post(Uri.parse("${urlApi}/clients"), headers: {
       "Content-Type": "application/json",
       "accept": "application/json",
     }, body: json.encode(client.toJson())).then((data) {
@@ -70,7 +70,7 @@ class Client {
 
   getAllClients() async {
     print("my clients");
-    String url = "http://$urlApi:3000/clients";
+    String url = "${urlApi}/clients";
     var response = await http.get(Uri.parse(url));
     var jsonData = (jsonDecode(response.body) as List);
     print(jsonData);

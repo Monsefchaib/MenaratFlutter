@@ -459,7 +459,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
   Future<String> uploadImage(filename, url) async {
     print("send image");
     var request = http.MultipartRequest(
-        'POST', Uri.parse("http://$urlApi:3000/media/"));
+        'POST', Uri.parse("${urlApi}/media/"));
     request.files.add(await http.MultipartFile.fromPath('file', filename));
     var res = await request.send();
     // var response = await http.Response.fromStream(res);
@@ -822,7 +822,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
 
   Future<List<Vehicule>> _getStateList() async {
     List<Vehicule> listMapped;
-    final url = Uri.parse('http://$urlApi:3000/vehicules');
+    final url = Uri.parse('${urlApi}/vehicules');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List vehicules = json.decode(response.body);
@@ -841,7 +841,7 @@ class _GenererBonGasoilState extends State<GenererBonGasoil> with InputValidatio
 
   Future<List<Engins>> _getEnginsList() async {
     List<Engins> listMapped;
-    final url = Uri.parse('http://$urlApi:3000/engins');
+    final url = Uri.parse('${urlApi}/engins');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List vehicules = json.decode(response.body);

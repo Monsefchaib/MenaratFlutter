@@ -2,17 +2,15 @@ import 'package:suiviventes/Models/Lots.dart';
 
 class Article{
   Lots? lot;
-  String? substrat;
-  String? conteneur;
   double? prixUnitaire;
   int? quantite;
 
-  Article(this.lot, this.substrat, this.conteneur, this.prixUnitaire,
+  Article(this.lot,this.prixUnitaire,
       this.quantite);
 
   @override
   String toString() {
-    return 'Article{articles: $lot, substrat: $substrat, conteneur: $conteneur, prixUnitaire: $prixUnitaire, quantite: $quantite}';
+    return 'Article{articles: $lot, prixUnitaire: $prixUnitaire, quantite: $quantite}';
   }
 
   Map<String, dynamic> toJson() {
@@ -20,8 +18,6 @@ class Article{
 
     return {
       'lot': this.lot,
-      'substrat': this.substrat,
-      'conteneur': this.conteneur,
       'prixUnitaire': this.prixUnitaire,
       'quantite': this.quantite,
     };
@@ -30,8 +26,6 @@ class Article{
    Article article = Article(
 
       Lots.fromJson(json['lot']),
-      json['substrat'] as String,
-      json['conteneur'] as String,
      (json['prixUnitaire'] as num).toDouble(),
      (json['quantite'] as num).toInt(),
    );

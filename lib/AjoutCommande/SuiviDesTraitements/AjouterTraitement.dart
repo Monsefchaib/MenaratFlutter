@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:suiviventes/AjoutCommande/SuiviDesTraitements/SelectionnerLeLotTraitement.dart';
+import 'package:suiviventes/Models/Products.dart';
 
 class AjouterTraitement extends StatefulWidget {
   @override
@@ -20,7 +22,10 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
   final TextEditingController _typeProduit = TextEditingController();
   final TextEditingController _quantite = TextEditingController();
   final TextEditingController _observations = TextEditingController();
+  final _nomCommercial = TextEditingController();
+  final _matiereActive = TextEditingController();
 
+  Product selectedProduct = new Product("", "", "", "");
   final TextEditingController _unite = TextEditingController();
   int numberOfProduits = 1;
   DateTime _date = DateTime.now();
@@ -71,7 +76,7 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ajouter traitement"),
+        title: Text("Ajouter une tâche"),
       ),
       body: ListView(
         shrinkWrap: true,
@@ -88,11 +93,26 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Ajouter un traitement : " , style: TextStyle(
+                    Text("Ajouter une tâche : " , style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold,)),
+                    SizedBox(height: 20,),
+                    TextFormField(
+                      controller: _matiereActive,
+                      decoration:  InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        labelText: 'Nom de la tâche',
+                        border:
+                        OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                      ),
+                      onChanged: (String? value){
+                        print(value);
+                      },
+                    ),
                     SizedBox(height: 20,),
                     ListTile(
                       onTap: () {
+                        Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new SelectionnerLotTraitement()));
 
                       },
                       leading:
@@ -167,52 +187,7 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
                       ),
                     ),
                     SizedBox(height: 20,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            validator: (date) {
-                              if (isDateValid(date!)) return null;
-                              else
-                                return 'Entrez une date valide';
-                            },
-                            readOnly: true,
-                            showCursor: false,
-                            enableInteractiveSelection: true,
-                            controller: _timeStartController,
-                            decoration: InputDecoration(
-                              suffixIcon:  IconButton(icon: Icon(Icons.access_time), onPressed:()=>_selectTime("start"),),
-                              labelText: "Heure de démarrage de l'opération",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10,),
-                        Expanded(
-                          child: TextFormField(
-                            validator: (date) {
-                              if (isDateValid(date!)) return null;
-                              else
-                                return 'Entrez une date valide';
-                            },
-                            readOnly: true,
-                            showCursor: false,
-                            enableInteractiveSelection: true,
-                            controller: _timeFinishController,
-                            decoration: InputDecoration(
-                              suffixIcon:  IconButton(icon: Icon(Icons.access_time), onPressed:()=>_selectTime("finish"),),
-                              labelText: "Heure de fin de l'opération",
-                              border: OutlineInputBorder(),
-                            ),
-
-                          ),
-                        ),
-                      ],
-                    ),
-                      SizedBox(height: 20,),
                     InputDecorator(
-
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 0.0),
@@ -305,8 +280,64 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
                                  ),
                                ],
                              ),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child:   TypeAheadFormField<Product?>(
+                                          debounceDuration: Duration(milliseconds: 500),
+                                          textFieldConfiguration: TextFieldConfiguration(
+                                            controller: _nomCommercial,
+                                            decoration: InputDecoration(
+                                              labelText: 'Produit',
+                                              contentPadding: EdgeInsets.symmetric(
+                                                  horizontal: 20.0, vertical: 10.0),
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                          suggestionsCallback: Product.getProducts,
+                                          itemBuilder: (context, Product? suggestions){
+                                            return ListTile(
+                                              title: Text(suggestions!.nom_commercial!),
+                                            );
+                                          },
+                                          noItemsFoundBuilder: (context)=>Container(
+                                            height: 100,
+                                            child: Center(
+                                              child: Text("Aucun produit n'est trouvé", style: TextStyle(fontSize: 24),),
+                                            ),
+                                          ),
+                                          onSuggestionSelected: (Product ? suggestion) {
+                                              setState(() {
+                                                selectedProduct=suggestion!;
+                                                _nomCommercial.text=selectedProduct.nom_commercial!;
+                                                _matiereActive.text=selectedProduct.matiere_active!;
+                                                _typeProduit.text=selectedProduct.categorie!;
 
-                                  SizedBox(height: 20,),
+                                              });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(width: 10,),
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _matiereActive,
+                                          decoration:  InputDecoration(
+                                            contentPadding: EdgeInsets.symmetric(
+                                                horizontal: 20.0, vertical: 10.0),
+                                            labelText: 'Matière active',
+                                            border:
+                                            OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                                          ),
+                                          onChanged: (String? value){
+                                            print(value);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -334,7 +365,7 @@ class _AjouterTraitementState extends State<AjouterTraitement> with InputValidat
                                           decoration:  InputDecoration(
                                             contentPadding: EdgeInsets.symmetric(
                                                 horizontal: 20.0, vertical: 10.0),
-                                            labelText: 'Type de produit',
+                                            labelText: 'Catégorie',
                                             border:
                                             OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                                           ),

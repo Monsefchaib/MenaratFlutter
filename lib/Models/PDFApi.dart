@@ -7,18 +7,18 @@ import '../constants.dart';
 
 class PDFApi{
   static Future<File> loadNetwork(String url) async {
-    final response = await http.get(Uri.parse('http://$urlApi:3000/media/$url'));
+    final response = await http.get(Uri.parse('${urlApi}/media/$url'));
     final bytes = response.bodyBytes;
 
     return _storeFile(url, bytes);
   }
   static Future<File> loadCommande(String url) async {
-    final response = await http.get(Uri.parse('http://$urlApi:3000/media/$url'));
+    final response = await http.get(Uri.parse('${urlApi}/media/$url'));
     final bytes = response.bodyBytes;
     return _storeFile(url, bytes);
   }
   static Future<File> loadBonCarburant(String url) async {
-    final response = await http.get(Uri.parse('http://$urlApi:3000/media/$url'));
+    final response = await http.get(Uri.parse('${urlApi}/media/$url'));
     final bytes = response.bodyBytes;
 
     return _storeFile(url, bytes);

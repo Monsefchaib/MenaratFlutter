@@ -251,7 +251,7 @@ class _SearchLotsState extends State<SearchLots> {
   );
 
 
-   lotCard(dynamic snapshot, int i){ return Container(
+   lotCard(Lots snapshot, int i){ return Container(
           height: 170.0,
          margin: new EdgeInsets.only(left: 46.0),
       decoration: new BoxDecoration(
@@ -273,45 +273,31 @@ class _SearchLotsState extends State<SearchLots> {
               Row(
               children: [
               Text("Code lot :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
-              Text("Code lot"),
+              Text(snapshot.code!),
 
               ],
           ),
           Row(
           children: [
-          Text("Site :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
-          Text(snapshot.site),
-          ],
-          ),
-          Row(
-          children: [
-          Text("Zone :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
-          Text(snapshot.zone),
-          ],
-          ),
-          Row(
-          children: [
           Text("Espèce :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
-          Text(snapshot.espece),
+          Text(snapshot.espece!),
           ]),
           Row(
               children: [
                 Text("Varieté :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
-                Text(snapshot.variete),
+                Text(snapshot.variete!),
               ]),
+          snapshot.porteGreffe !=""? new Row(
+            children: [
+              Text("Porte Greffe :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
+              Text(snapshot.porteGreffe!),
+            ],
+          ): Container(),
           Row(
               children: [
                 Text("Quantité :  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color:Colors.lightGreen)),
                 Text('${snapshot.quantite}'),
               ]),
-          // Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //     children: [
-          //       Text("Quantité Reservée:  ", style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold, color:Colors.redAccent)),
-          //       _itemCount[i]!=0? new IconButton(icon: new Icon(Icons.remove),onPressed: ()=>setState(()=>_itemCount[i]--),):new Container(),
-          //       new Text(_itemCount[i].toString()),
-          //       new IconButton(icon: new Icon(Icons.add),onPressed: ()=>setState(()=>_itemCount[i]++)),
-          //     ]),
         ],
       ),
     ),
@@ -321,7 +307,7 @@ class _SearchLotsState extends State<SearchLots> {
   lotThumbnail(List<dynamic> snapshot) {
     return Container(
         margin: EdgeInsets.symmetric(
-            vertical: 25.0
+            vertical: 15.0
         ),
         // alignment: FractionalOffset.centerLeft,
         child: Container(

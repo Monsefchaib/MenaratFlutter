@@ -133,7 +133,7 @@ class Bons{
   }
 
   Future<APIResponse<bool>> createBon(Bons bon) {
-    return http.post(Uri.parse("http://$urlApi:3000/bons"), headers: {
+    return http.post(Uri.parse("${urlApi}/bons"), headers: {
       "Content-Type": "application/json",
       "accept": "application/json",
     }, body: json.encode(bon.toJson())).then((data) async {
@@ -153,7 +153,7 @@ class Bons{
   }
 
   static Future<List<Bons>> getBons() async {
-    final url = Uri.parse('http://$urlApi:3000/bons/');
+    final url = Uri.parse('${urlApi}/bons/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List bons = json.decode(response.body);
@@ -168,8 +168,9 @@ class Bons{
   }
 
   static Future<Bons> getBonById(String? id) async {
-    final url = Uri.parse('http://$urlApi:3000/bons/byId/$id');
+    final url = Uri.parse('${urlApi}/bons/byId/$id');
     final response = await http.get(url);
+    print(response);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
       Bons bon = new Bons.AllfromJson(jsonData);
